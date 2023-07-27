@@ -14,19 +14,19 @@
 
 -  What you see in the second gif is done with `Activate Selections` command.
 
--  By default they are mapped to **Page Down** and **Page Up** respectively. If you need help in remapping them, check below.
+-  By default they are mapped to `Page Down` and `Page Up` respectively. If you need help in remapping them, check below.
 
 ## Read more
 
 #### Other features
 
--  To remove all inactive selections, simply press **Esc**.
+-  To remove all inactive selections, simply press `Esc`.
 
 -  To remove a certain inactive selection, select it and use again the `Place Inactive Selection` command.
 
 #### If you want to remap the commands
 
-1. Open the Command Palette (**Ctrl+Shift+P** - Windows, **Cmd+Shift+P** - Mac).
+1. Open the Command Palette (`Ctrl+Shift+P` - Windows, `Cmd+Shift+P` - Mac).
 
 2. Search for and select `Preferences: Open Keyboard Shortcuts`.
 
