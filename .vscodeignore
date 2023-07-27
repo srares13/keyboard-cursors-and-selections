@@ -10,3 +10,5 @@ vsc-extension-quickstart.md
 
 # My ignores
 teste.js
+.eslintrc.cjs
+prettier.config.cjs
