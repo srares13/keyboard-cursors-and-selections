@@ -1,0 +1,66 @@
+{
+   "name": "kcs",
+   "displayName": "Keyboard Cursors and Selections",
+   "description": "It enables you to create cursors and selections with the keyboard.",
+   "version": "1.0.0",
+   "engines": {
+      "vscode": "^1.77.0"
+   },
+   "categories": [
+      "Other"
+   ],
+   "keywords": [
+      "cursor",
+      "selection",
+      "multi",
+      "keyboard",
+      "custom"
+   ],
+   "activationEvents": [],
+   "main": "./extension.js",
+   "contributes": {
+      "commands": [
+         {
+            "command": "kcs.placeInactiveSelection",
+            "title": "KCS: Place Inactive Selection"
+         },
+         {
+            "command": "kcs.activateSelections",
+            "title": "KCS: Activate Selections"
+         },
+         {
+            "command": "kcs.removeInactiveSelections",
+            "title": "KCS: Remove Inactive Selections"
+         }
+      ],
+      "keybindings": [
+         {
+            "command": "kcs.placeInactiveSelection",
+            "key": "pagedown",
+            "when": "editorTextFocus"
+         },
+         {
+            "command": "kcs.activateSelections",
+            "key": "pageup",
+            "when": "editorTextFocus"
+         },
+         {
+            "command": "kcs.removeInactiveSelections",
+            "key": "escape",
+            "when": "editorTextFocus && inactiveSelections && !findWidgetVisible && !suggestWidgetVisible && !suggestWidgetMultipleSuggestions && !renameInputVisible && !referenceSearchVisible && !inReferenceSearchEditor && !quickFixWidgetVisible && !parameterHintsVisible && !parameterHintsMultipleSignatures && !editorHasSelection && !editorHasMultipleSelections && !notificationCenterVisible && !notificationToastsVisible"
+         }
+      ]
+   },
+   "scripts": {
+      "lint": "eslint .",
+      "pretest": "npm run lint",
+      "test": "node ./test/runTest.js"
+   },
+   "devDependencies": {
+      "@vscode/test-electron": "^2.3.0",
+      "eslint": "^8.36.0"
+   },
+   "dependencies": {
+      "prettier": "^2.8.8"
+   }
+}
