@@ -15,6 +15,21 @@ const activate = (context) => {
    )
    const disposables = []
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+   let inactiveSelectionsContext = false
+
+   vscode.window.onDidChangeWindowState(
+      (state) => {
+         if (state.focused) {
+            vscode.commands.executeCommand(
+               'setContext',
+               'inactiveSelections',
+               inactiveSelectionsContext
+            )
+         }
+      },
+      undefined,
+      disposables
+   )
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
@@ -68,6 +83,7 @@ const activate = (context) => {
             })
 
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            inactiveSelectionsContext = false
          }
       },
       undefined,
@@ -95,6 +111,7 @@ const activate = (context) => {
 
             hiddenSelections[docUriKey] = false
             vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
+            inactiveSelectionsContext = true
          }
       },
       undefined,
@@ -125,8 +142,10 @@ const activate = (context) => {
 
          if (hiddenSelections[docUriKey] === false) {
             vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
+            inactiveSelectionsContext = true
          } else {
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            inactiveSelectionsContext = false
          }
       },
       undefined,
@@ -141,13 +160,14 @@ const activate = (context) => {
          delete hiddenSelections[docUriKey]
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+         inactiveSelectionsContext = false
       },
       undefined,
       disposables
    )
 
    const placeInactiveSelection = vscode.commands.registerCommand(
-      'keyboard-cursors.placeInactiveSelection',
+      'kcs.placeInactiveSelection',
       () => {
          const editor = vscode.window.activeTextEditor
          if (!editor) {
@@ -199,6 +219,7 @@ const activate = (context) => {
 
          hiddenSelections[docUriKey] = false
          vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
+         inactiveSelectionsContext = true
 
          currentInactiveSelections = currentInactiveSelections.filter(
             (inactiveSelection) => inactiveSelection
@@ -222,55 +243,54 @@ const activate = (context) => {
             delete hiddenSelections[docUriKey]
 
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            inactiveSelectionsContext = false
          }
       }
    )
 
-   const activateSelections = vscode.commands.registerCommand(
-      'keyboard-cursors.activateSelections',
-      () => {
-         const editor = vscode.window.activeTextEditor
-         if (!editor) {
-            return
-         }
-
-         const docUriKey = editor.document.uri.toString()
-         if (!inactiveSelections[docUriKey] || hiddenSelections[docUriKey]) {
-            return
-         }
-
-         const selections = inactiveSelections[docUriKey].map(
-            (range) => new vscode.Selection(range.start, range.end)
-         )
-         vscode.window.visibleTextEditors.forEach((editor) => {
-            if (editor.document.uri.toString() === docUriKey) {
-               editor.selections = selections
-            }
-         })
-
-         hiddenSelections[docUriKey] = true
-
-         vscode.window.visibleTextEditors.forEach((editor) => {
-            if (editor.document.uri.toString() === docUriKey) {
-               unsetMyDecorations(editor, {
-                  cursorDecoration,
-                  selectionDecoration,
-                  eolSelectionDecoration
-               })
-            }
-         })
-
-         vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-
-         if (selections.length === 1 && selections[0].start.isEqual(selections[0].end)) {
-            delete inactiveSelections[docUriKey]
-            delete hiddenSelections[docUriKey]
-         }
+   const activateSelections = vscode.commands.registerCommand('kcs.activateSelections', () => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor) {
+         return
       }
-   )
+
+      const docUriKey = editor.document.uri.toString()
+      if (!inactiveSelections[docUriKey] || hiddenSelections[docUriKey]) {
+         return
+      }
+
+      const selections = inactiveSelections[docUriKey].map(
+         (range) => new vscode.Selection(range.start, range.end)
+      )
+      vscode.window.visibleTextEditors.forEach((editor) => {
+         if (editor.document.uri.toString() === docUriKey) {
+            editor.selections = selections
+         }
+      })
+
+      hiddenSelections[docUriKey] = true
+
+      vscode.window.visibleTextEditors.forEach((editor) => {
+         if (editor.document.uri.toString() === docUriKey) {
+            unsetMyDecorations(editor, {
+               cursorDecoration,
+               selectionDecoration,
+               eolSelectionDecoration
+            })
+         }
+      })
+
+      vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+      inactiveSelectionsContext = false
+
+      if (selections.length === 1 && selections[0].start.isEqual(selections[0].end)) {
+         delete inactiveSelections[docUriKey]
+         delete hiddenSelections[docUriKey]
+      }
+   })
 
    const removeInactiveSelections = vscode.commands.registerCommand(
-      'keyboard-cursors.removeInactiveSelections',
+      'kcs.removeInactiveSelections',
       () => {
          const editor = vscode.window.activeTextEditor
          if (!editor) {
@@ -292,6 +312,7 @@ const activate = (context) => {
          delete hiddenSelections[docUriKey]
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+         inactiveSelectionsContext = false
       }
    )
 
