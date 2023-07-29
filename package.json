@@ -1,8 +1,8 @@
 {
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
-   "description": "It enables you to create cursors and selections with the keyboard.",
-   "version": "1.0.0",
+   "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
+   "version": "1.0.1",
    "publisher": "srares13",
    "repository": {
       "type": "git",
