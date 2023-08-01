@@ -1,4 +1,4 @@
-## Summary
+# In a nutshell
 
 ### Create cursors and selections
 
@@ -14,25 +14,52 @@
 
 -  What you see in the second gif is done with `Activate Selections` command.
 
--  By default they are mapped to `Page Down` and `Page Up` respectively. If you need help in remapping them, check below.
+-  By default they are mapped to `PageDown` and `PageUp` respectively. If you need help in remapping them, check below.
 
-## Read more
+<br>
+<br>
+
+# Read more
 
 ### Feedback
 
--  For questions, suggestions, issues, feel free to use the Issues section of the extension's repository: [Issues](https://github.com/srares13/keyboard-cursors-and-selections/issues).
+For questions, suggestions, issues, feel free to use the [Issues](https://github.com/srares13/keyboard-cursors-and-selections/issues) section of the extension's repository.
+
+<br>
 
 ### Notes
 
--  A cursor is actually just a selection which has the start and the end positions the same. This is useful to know further that when saying "selections" I'm including also the cursors.
+> A cursor is actually just a selection which has the start and the end positions the same. This is useful to know further that when I'm saying "selections" I'm referring to cursors as well.
 
-### Other features
+<br>
+
+### Other features and tips
+
+These features and tips are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
+
+<br>
 
 -  To remove all inactive selections, simply press `Esc`.
 
--  To remove a certain inactive selection, select it and use again the `Place Inactive Selection` command.
+<br>
 
--  If you activated the inactive selections, did not yet edit the document and discarded the active selections, the inactive selections will reappear. This is because maybe you wanted to modify something about those inactive selections, and this behaviour allows you to do that.
+-  To remove a certain inactive selection, select it and use again the `Place Inactive Selection` command. Alternatively, you can make use of the fact that if a new inactive selection is placed and is intersected with others, the others will be removed:
+
+   ![Remove innactive selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnI1dzA0bHpicW55NnA3enVlaGE1NHVsaHVxaDZyN2J4Znh2dHIyYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gBoiWQQr3rdcZt3SFg/giphy.gif)
+
+   In the gif the commands are typed with pause between them, but you can rapidly double tap the `Place Inactive Selection` command to effectevely perform a removal.
+
+   <br>
+
+-  If you activated the inactive selections, did not yet edit the document and discarded the active selections, the inactive selections will reappear. This is because maybe you wanted to modify something about those inactive selections, and this behaviour allows you to do that:
+
+   ![Inactive selections reappear](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Zwc2tsb2RwczZobHNkamMwajMyZXU0dnA4ZHlsY3BubXNkNzFpaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XTo0ZNyw3jCEsN5gdJ/giphy.gif)
+
+   <br>
+
+-  Placing multiple inactive selections at once is also supported.
+
+   ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
 
 ### If you want to remap the commands
 
