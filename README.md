@@ -27,6 +27,16 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 <br>
 
+### If you want to remap the commands
+
+1. Open the Command Palette (`Ctrl+Shift+P` - Windows, `Cmd+Shift+P` - Mac).
+
+2. Search for and select `Preferences: Open Keyboard Shortcuts`.
+
+3. Once the Shortcuts tab is open, search for the desired command, in this case `Place Inactive Selection` or `Activate Selections`, double click on it and press the new key combination.
+
+<br>
+
 ### Notes
 
 > A cursor is actually just a selection which has the start and the end positions the same. This is useful to know further that when I'm saying "selections" I'm referring to cursors as well.
@@ -61,10 +71,12 @@ These features and tips are usually intuitive and discoverable while you are usi
 
    ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
 
-### If you want to remap the commands
+<br>
 
-1. Open the Command Palette (`Ctrl+Shift+P` - Windows, `Cmd+Shift+P` - Mac).
+### Extension limitations
 
-2. Search for and select `Preferences: Open Keyboard Shortcuts`.
+These limitations are more technical and are handled to not constitute functionality breaking situations.
 
-3. Once the Shortcuts tab is open, search for the desired command, in this case `Place Inactive Selection` or `Activate Selections`, double click on it and press the new key combination.
+-  The VS Code Extension API makes it hard to create visuals that distinguish adjacent selections from one another. The workaround was to make the visuals for an inactive selection always having its cursor to the right. This way, it will be known in each situation where an inactive selection starts and where it ends.
+
+-  The VS Code Extension API does not provide a built-in way to uniquely identify editors which have the same file. Hence, the inactive selections once set on an editor, they will appear on the other editors which have the same file.
