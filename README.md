@@ -73,6 +73,12 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 <br>
 
+### Behaviours
+
+-  When you start editing the file, the inactive selections will disappear.
+
+<br>
+
 ### Extension limitations
 
 These limitations are more technical and are handled to not constitute functionality breaking situations.
