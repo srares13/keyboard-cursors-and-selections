@@ -37,6 +37,10 @@
          {
             "command": "kcs.removeInactiveSelections",
             "title": "KCS: Remove Inactive Selections"
+         },
+         {
+            "command": "kcs.debuggingCommand",
+            "title": "KCS: Debugging Command"
          }
       ],
       "keybindings": [
