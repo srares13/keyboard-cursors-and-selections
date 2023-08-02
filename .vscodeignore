@@ -13,3 +13,6 @@ vsc-extension-quickstart.md
 teste.js
 .eslintrc.cjs
 prettier.config.cjs
+extension.js
+utils.js
+esbuild.js

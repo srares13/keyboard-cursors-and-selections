@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
-   "version": "1.0.2",
+   "version": "1.0.3",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -23,7 +23,7 @@
       "custom"
    ],
    "activationEvents": [],
-   "main": "./extension.js",
+   "main": "./bundle/extension.js",
    "contributes": {
       "commands": [
          {
@@ -63,9 +63,11 @@
    },
    "scripts": {
       "lint": "eslint .",
-      "pretest": "npm run lint"
+      "pretest": "npm run lint",
+      "vscode:prepublish": "node ./esbuild.js"
    },
    "devDependencies": {
+      "esbuild": "~0.18.17",
       "eslint": "~8.36.0",
       "prettier": "~2.8.8"
    }
