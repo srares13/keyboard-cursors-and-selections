@@ -1,3 +1,7 @@
+### 1.0.3 (01 Aug 2023)
+
+-  The extension is now supported by WEB version of VS Code.
+
 ### 1.0.2 (01 Aug 2023)
 
 -  Changes to README file.

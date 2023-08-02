@@ -75,7 +75,7 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 ### Behaviours
 
--  When you start editing the file, the inactive selections will disappear.
+-  When you start editing the file, the inactive selections will be removed.
 
 <br>
 
