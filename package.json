@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
-   "version": "1.0.3",
+   "version": "1.0.4",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -23,7 +23,7 @@
       "custom"
    ],
    "activationEvents": [],
-   "main": "./bundle/extension.js",
+   "browser": "./bundle/extension.js",
    "contributes": {
       "commands": [
          {
