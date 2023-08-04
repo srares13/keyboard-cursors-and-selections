@@ -23,7 +23,7 @@
       "custom"
    ],
    "activationEvents": [],
-   "browser": "./bundle/extension.js",
+   "main": "extension.js",
    "contributes": {
       "commands": [
          {
