@@ -9,13 +9,12 @@ const activate = (context) => {
    const inactiveSelections = {}
    /** @type {Object<string, boolean>} */
    const hiddenSelections = {}
-   const outputChannel = vscode.window.createOutputChannel('KCS')
+   // const outputChannel = vscode.window.createOutputChannel('KCS')
    let { cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
    const disposables = []
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-   outputChannel.appendLine('from here 1')
    let inactiveSelectionsContext = false
 
    vscode.workspace.onDidChangeConfiguration(
@@ -70,7 +69,6 @@ const activate = (context) => {
             })
 
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-            outputChannel.appendLine('from here 2')
             inactiveSelectionsContext = false
          }
       },
@@ -133,7 +131,6 @@ const activate = (context) => {
             inactiveSelectionsContext = true
          } else {
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-            outputChannel.appendLine('from here 3')
             inactiveSelectionsContext = false
          }
       },
@@ -149,7 +146,6 @@ const activate = (context) => {
          delete hiddenSelections[docUriKey]
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-         outputChannel.appendLine('from here 4')
          inactiveSelectionsContext = false
       },
       undefined,
@@ -233,7 +229,6 @@ const activate = (context) => {
             delete hiddenSelections[docUriKey]
 
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-            outputChannel.appendLine('from here 5')
             inactiveSelectionsContext = false
          }
       }
@@ -272,7 +267,6 @@ const activate = (context) => {
       })
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-      outputChannel.appendLine('from here 6')
       inactiveSelectionsContext = false
 
       if (selections.length === 1 && selections[0].start.isEqual(selections[0].end)) {
@@ -304,20 +298,14 @@ const activate = (context) => {
          delete hiddenSelections[docUriKey]
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-         outputChannel.appendLine('from here 7')
          inactiveSelectionsContext = false
       }
    )
-
-   const debuggingCommand = vscode.commands.registerCommand('kcs.debuggingCommand', () => {
-      outputChannel.appendLine(`inactiveSelectionsContext: ${inactiveSelectionsContext}`)
-   })
 
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
       removeInactiveSelections,
-      debuggingCommand,
       cursorDecoration,
       selectionDecoration,
       eolSelectionDecoration,

@@ -67,7 +67,7 @@ These features and tips are usually intuitive and discoverable while you are usi
 
    <br>
 
--  Placing multiple inactive selections at once is also supported:
+-  Placing multiple inactive selections at once is also supported.
 
    ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
 
