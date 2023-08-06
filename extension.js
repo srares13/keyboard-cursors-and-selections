@@ -191,7 +191,7 @@ const activate = (context) => {
 
             if (addInactiveSelection) {
                const range = new vscode.Range(selection.start, selection.end)
-               newInactiveSelections.unshift(range)
+               newInactiveSelections.push(range)
             }
          })
 
