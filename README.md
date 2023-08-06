@@ -49,6 +49,12 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 <br>
 
+-  Placing multiple inactive selections at once is also supported.
+
+   ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
+
+<br>
+
 -  To remove all inactive selections, simply press `Esc`.
 
 <br>
@@ -59,17 +65,11 @@ These features and tips are usually intuitive and discoverable while you are usi
 
    In the gif the commands are typed with pause between them, but you can rapidly double tap the `Place Inactive Selection` command to effectevely perform a removal.
 
-   <br>
+<br>
 
 -  If you activated the inactive selections, did not yet edit the document and discarded the active selections, the inactive selections will reappear. This is because maybe you wanted to modify something about those inactive selections, and this behaviour allows you to do that:
 
    ![Inactive selections reappear](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Zwc2tsb2RwczZobHNkamMwajMyZXU0dnA4ZHlsY3BubXNkNzFpaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XTo0ZNyw3jCEsN5gdJ/giphy.gif)
-
-   <br>
-
--  Placing multiple inactive selections at once is also supported.
-
-   ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
 
 <br>
 

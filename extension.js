@@ -9,7 +9,7 @@ const activate = (context) => {
    const inactiveSelections = {}
    /** @type {Object<string, boolean>} */
    const hiddenSelections = {}
-   const outputChannel = vscode.window.createOutputChannel('KCS')
+   // const outputChannel = vscode.window.createOutputChannel('KCS')
    let { cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
