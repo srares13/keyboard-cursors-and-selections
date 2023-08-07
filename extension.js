@@ -158,12 +158,13 @@ const activate = (context) => {
             inactiveSelections[docUriKey] = []
          }
 
-         let currentInactiveSelections = inactiveSelections[docUriKey]
+         const currentInactiveSelections = inactiveSelections[docUriKey]
             ? [...inactiveSelections[docUriKey]]
             : []
 
          /** @type {vscode.Range[]} */
          const newInactiveSelections = []
+         let inactiveSelectionsIntersected = false
 
          editor.selections.forEach((selection) => {
             let addInactiveSelection = true
@@ -197,20 +198,19 @@ const activate = (context) => {
             }
          })
 
-         hiddenSelections[docUriKey] = false
-         vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
-
-         currentInactiveSelections = currentInactiveSelections.filter(
+         const unremovedInactiveSelections = currentInactiveSelections.filter(
             (inactiveSelection) => inactiveSelection
          )
 
-         newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
-            inactiveSelection1.start.compareTo(inactiveSelection2.start)
-         )
-
-         currentInactiveSelections = currentInactiveSelections.concat(newInactiveSelections)
-
-         inactiveSelections[docUriKey] = currentInactiveSelections
+         if (unremovedInactiveSelections.length === currentInactiveSelections.length) {
+            newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
+               inactiveSelection1.start.compareTo(inactiveSelection2.start)
+            )
+            inactiveSelections[docUriKey] =
+               unremovedInactiveSelections.concat(newInactiveSelections)
+         } else {
+            inactiveSelections[docUriKey] = unremovedInactiveSelections
+         }
 
          vscode.window.visibleTextEditors.forEach((editor) => {
             if (editor.document.uri.toString() === docUriKey) {
@@ -222,7 +222,10 @@ const activate = (context) => {
             }
          })
 
-         if (!inactiveSelections[docUriKey].length) {
+         if (inactiveSelections[docUriKey].length) {
+            hiddenSelections[docUriKey] = false
+            vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
+         } else {
             delete inactiveSelections[docUriKey]
             delete hiddenSelections[docUriKey]
 
