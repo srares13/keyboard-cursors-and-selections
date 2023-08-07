@@ -201,7 +201,8 @@ const activate = (context) => {
          currentInactiveSelections = currentInactiveSelections.filter(
             (inactiveSelection) => inactiveSelection
          )
-         currentInactiveSelections = newInactiveSelections.concat(currentInactiveSelections)
+
+         currentInactiveSelections = currentInactiveSelections.concat(newInactiveSelections)
 
          inactiveSelections[docUriKey] = currentInactiveSelections
 
@@ -238,6 +239,7 @@ const activate = (context) => {
       const selections = inactiveSelections[docUriKey].map(
          (range) => new vscode.Selection(range.start, range.end)
       )
+
       vscode.window.visibleTextEditors.forEach((editor) => {
          if (editor.document.uri.toString() === docUriKey) {
             editor.selections = selections
