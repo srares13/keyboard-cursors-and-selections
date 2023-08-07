@@ -161,6 +161,8 @@ const activate = (context) => {
          let currentInactiveSelections = inactiveSelections[docUriKey]
             ? [...inactiveSelections[docUriKey]]
             : []
+
+         /** @type {vscode.Range[]} */
          const newInactiveSelections = []
 
          editor.selections.forEach((selection) => {
@@ -200,6 +202,10 @@ const activate = (context) => {
 
          currentInactiveSelections = currentInactiveSelections.filter(
             (inactiveSelection) => inactiveSelection
+         )
+
+         newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
+            inactiveSelection1.start.compareTo(inactiveSelection2.start)
          )
 
          currentInactiveSelections = currentInactiveSelections.concat(newInactiveSelections)
