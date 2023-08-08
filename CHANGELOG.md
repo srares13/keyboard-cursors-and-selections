@@ -1,4 +1,4 @@
-### 1.1.0 (07 Aug 2023)
+### 1.1.0 (08 Aug 2023)
 
 -  When you you place an inactive selection that is intersected with others, it will only remove the existing one and not place another (if you want to place another, you simply hit the command again). The reason for this change is to have a universal behaviour. We already had this behaviour when you perfectly matched an inactive selection. But now you'll know what to expect in any situation when an inactive selection is intersected in any way with another, it will only remove the existing one.
 
