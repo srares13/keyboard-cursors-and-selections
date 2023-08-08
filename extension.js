@@ -158,52 +158,54 @@ const activate = (context) => {
             inactiveSelections[docUriKey] = []
          }
 
-         let currentInactiveSelections = inactiveSelections[docUriKey]
+         const currentInactiveSelections = inactiveSelections[docUriKey]
             ? [...inactiveSelections[docUriKey]]
             : []
+
+         /** @type {vscode.Range[]} */
          const newInactiveSelections = []
+         const currentInactiveSelectionsWithRemoved = [...currentInactiveSelections]
 
          editor.selections.forEach((selection) => {
             let addInactiveSelection = true
 
             for (let i = 0; i < currentInactiveSelections.length; i++) {
-               if (!currentInactiveSelections[i]) {
-                  continue
-               }
-
-               if (selection.isEqual(currentInactiveSelections[i])) {
-                  currentInactiveSelections[i] = null
-                  addInactiveSelection = false
-               } else if (selection.intersection(currentInactiveSelections[i])) {
+               if (selection.intersection(currentInactiveSelections[i])) {
                   if (
                      selection.start.isEqual(selection.end) ||
                      currentInactiveSelections[i].start.isEqual(currentInactiveSelections[i].end)
                   ) {
-                     currentInactiveSelections[i] = null
+                     currentInactiveSelectionsWithRemoved[i] = null
+                     addInactiveSelection = false
                   } else if (
                      !selection.start.isEqual(currentInactiveSelections[i].end) &&
                      !selection.end.isEqual(currentInactiveSelections[i].start)
                   ) {
-                     currentInactiveSelections[i] = null
+                     currentInactiveSelectionsWithRemoved[i] = null
+                     addInactiveSelection = false
                   }
                }
             }
 
             if (addInactiveSelection) {
                const range = new vscode.Range(selection.start, selection.end)
-               newInactiveSelections.unshift(range)
+               newInactiveSelections.push(range)
             }
          })
 
-         hiddenSelections[docUriKey] = false
-         vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
-
-         currentInactiveSelections = currentInactiveSelections.filter(
+         const unremovedInactiveSelections = currentInactiveSelectionsWithRemoved.filter(
             (inactiveSelection) => inactiveSelection
          )
-         currentInactiveSelections = newInactiveSelections.concat(currentInactiveSelections)
 
-         inactiveSelections[docUriKey] = currentInactiveSelections
+         if (unremovedInactiveSelections.length === currentInactiveSelections.length) {
+            newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
+               inactiveSelection1.start.compareTo(inactiveSelection2.start)
+            )
+            inactiveSelections[docUriKey] =
+               unremovedInactiveSelections.concat(newInactiveSelections)
+         } else {
+            inactiveSelections[docUriKey] = unremovedInactiveSelections
+         }
 
          vscode.window.visibleTextEditors.forEach((editor) => {
             if (editor.document.uri.toString() === docUriKey) {
@@ -215,7 +217,10 @@ const activate = (context) => {
             }
          })
 
-         if (!inactiveSelections[docUriKey].length) {
+         if (inactiveSelections[docUriKey].length) {
+            hiddenSelections[docUriKey] = false
+            vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
+         } else {
             delete inactiveSelections[docUriKey]
             delete hiddenSelections[docUriKey]
 
@@ -238,6 +243,7 @@ const activate = (context) => {
       const selections = inactiveSelections[docUriKey].map(
          (range) => new vscode.Selection(range.start, range.end)
       )
+
       vscode.window.visibleTextEditors.forEach((editor) => {
          if (editor.document.uri.toString() === docUriKey) {
             editor.selections = selections
