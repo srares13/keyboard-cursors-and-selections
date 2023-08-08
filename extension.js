@@ -164,30 +164,25 @@ const activate = (context) => {
 
          /** @type {vscode.Range[]} */
          const newInactiveSelections = []
-         let inactiveSelectionsIntersected = false
+         const currentInactiveSelectionsWithRemoved = [...currentInactiveSelections]
 
          editor.selections.forEach((selection) => {
             let addInactiveSelection = true
 
             for (let i = 0; i < currentInactiveSelections.length; i++) {
-               if (!currentInactiveSelections[i]) {
-                  continue
-               }
-
-               if (selection.isEqual(currentInactiveSelections[i])) {
-                  currentInactiveSelections[i] = null
-                  addInactiveSelection = false
-               } else if (selection.intersection(currentInactiveSelections[i])) {
+               if (selection.intersection(currentInactiveSelections[i])) {
                   if (
                      selection.start.isEqual(selection.end) ||
                      currentInactiveSelections[i].start.isEqual(currentInactiveSelections[i].end)
                   ) {
-                     currentInactiveSelections[i] = null
+                     currentInactiveSelectionsWithRemoved[i] = null
+                     addInactiveSelection = false
                   } else if (
                      !selection.start.isEqual(currentInactiveSelections[i].end) &&
                      !selection.end.isEqual(currentInactiveSelections[i].start)
                   ) {
-                     currentInactiveSelections[i] = null
+                     currentInactiveSelectionsWithRemoved[i] = null
+                     addInactiveSelection = false
                   }
                }
             }
@@ -198,7 +193,7 @@ const activate = (context) => {
             }
          })
 
-         const unremovedInactiveSelections = currentInactiveSelections.filter(
+         const unremovedInactiveSelections = currentInactiveSelectionsWithRemoved.filter(
             (inactiveSelection) => inactiveSelection
          )
 
