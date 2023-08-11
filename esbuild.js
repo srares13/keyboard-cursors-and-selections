@@ -8,6 +8,9 @@ esbuild
       target: ['node14'],
       outfile: 'bundle/extension.js',
       external: ['vscode'],
-      format: 'cjs'
+      format: 'cjs',
+      loader: {
+         '.md': 'text'
+      }
    })
    .catch(() => process.exit(1))

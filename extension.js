@@ -1,4 +1,5 @@
 const vscode = require('vscode')
+
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
 
 /**
@@ -7,13 +8,16 @@ const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./u
 const activate = (context) => {
    /** @type {Object<string, vscode.Range[]>} */
    const inactiveSelections = {}
+
    /** @type {Object<string, boolean>} */
    const hiddenSelections = {}
-   // const outputChannel = vscode.window.createOutputChannel('KCS')
+
    let { cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
+
    const disposables = []
+
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
    vscode.workspace.onDidChangeConfiguration(
@@ -296,10 +300,13 @@ const activate = (context) => {
       }
    )
 
+   const someCommand = vscode.commands.registerCommand('kcs.someCommand', () => {})
+
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
       removeInactiveSelections,
+      someCommand,
       cursorDecoration,
       selectionDecoration,
       eolSelectionDecoration,
