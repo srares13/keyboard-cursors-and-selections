@@ -64,7 +64,8 @@
    "scripts": {
       "lint": "eslint .",
       "pretest": "npm run lint",
-      "vscode:prepublish": "node ./esbuild.js"
+      "vscode:prepublish": "node ./esbuild.js",
+      "bundle": "node ./esbuild.js"
    },
    "devDependencies": {
       "esbuild": "~0.18.17",

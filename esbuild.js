@@ -11,6 +11,7 @@ esbuild
       format: 'cjs',
       loader: {
          '.md': 'text'
-      }
+      },
+      sourcemap: true
    })
    .catch(() => process.exit(1))

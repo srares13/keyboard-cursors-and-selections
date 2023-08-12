@@ -300,7 +300,9 @@ const activate = (context) => {
       }
    )
 
-   const someCommand = vscode.commands.registerCommand('kcs.someCommand', () => {})
+   const someCommand = vscode.commands.registerCommand('kcs.someCommand', () => {
+      console.log('spune ceva')
+   })
 
    context.subscriptions.push(
       placeInactiveSelection,

@@ -79,7 +79,7 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 ### Extension limitations
 
-These limitations are more technical and are handled to not constitute functionality breaking situations. I will mention them, but they are not abandoned, I may be able to overcome them.
+These limitations are more technical and are handled to not constitute functionality breaking situations.
 
 -  The VS Code Extension API makes it hard to create visuals that distinguish adjacent selections from one another. The workaround was to make the visuals for an inactive selection always having its cursor to the right. This way, it will be known in each situation where an inactive selection starts and where it ends.
 
