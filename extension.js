@@ -1,6 +1,11 @@
 const vscode = require('vscode')
 
-const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
+const {
+   createDecorations,
+   setMyDecorations,
+   unsetMyDecorations,
+   showReleaseNotes
+} = require('./utils')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -301,7 +306,7 @@ const activate = (context) => {
    )
 
    const someCommand = vscode.commands.registerCommand('kcs.someCommand', () => {
-      console.log('spune ceva')
+      showReleaseNotes()
    })
 
    context.subscriptions.push(

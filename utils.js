@@ -1,4 +1,5 @@
 const vscode = require('vscode')
+const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
 
 const createDecorations = (fontSize) => {
    const cursorDecorationBorder = 0.073333 * fontSize + 'px'
@@ -77,4 +78,26 @@ const unsetMyDecorations = (
    editor.setDecorations(eolSelectionDecoration, [])
 }
 
-module.exports = { createDecorations, setMyDecorations, unsetMyDecorations }
+const showReleaseNotes = () => {
+   const provider = {
+      provideTextDocumentContent(uri) {
+         return releaseNotesContent
+      }
+   }
+
+   const scheme = 'releaseNotes'
+
+   vscode.workspace.registerTextDocumentContentProvider(scheme, provider)
+
+   const virtualDocUri = vscode.Uri.parse(`${scheme}:///KCS_RELEASE_NOTES.md`)
+
+   vscode.window
+      .showInformationMessage('KCS: New important changes', 'Release Notes')
+      .then((selection) => {
+         if (selection === 'Release Notes') {
+            vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
+         }
+      })
+}
+
+module.exports = { createDecorations, setMyDecorations, unsetMyDecorations, showReleaseNotes }
