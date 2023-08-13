@@ -17,3 +17,4 @@ extension.js
 utils.js
 esbuild.js
 KCS_RELEASE_NOTES.md
+releaseNotes.js

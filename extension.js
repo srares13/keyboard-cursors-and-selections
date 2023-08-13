@@ -1,11 +1,7 @@
 const vscode = require('vscode')
 
-const {
-   createDecorations,
-   setMyDecorations,
-   unsetMyDecorations,
-   showReleaseNotes
-} = require('./utils')
+const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
+const { showReleaseNotes } = require('./releaseNotes')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -24,6 +20,8 @@ const activate = (context) => {
    const disposables = []
 
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+
+   showReleaseNotes(context)
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {

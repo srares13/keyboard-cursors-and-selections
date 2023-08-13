@@ -4,7 +4,7 @@
 
 -  When the inactive selections are activated and then discarded, the selection which remains is the one whose inactive selection was placed first. This behaviour is in accordance with how VS Code handles this when you place multiple selections with the mouse and then discard them.
 
--  Fixed an issue when placing multiple inactive selections and in some places there were already some inactive selections
+-  Fixed an issue when placing multiple inactive selections at once and in some places there were already some inactive selections.
 
 ### 1.0.4 (06 Aug 2023)
 
