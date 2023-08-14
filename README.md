@@ -10,9 +10,9 @@
 
 ### Everything is done with two commands
 
--  What you see in the first gif is done with `Place Inactive Selection` command.
+-  Create inactive cursors and selections with `Place Inactive Selection` command.
 
--  What you see in the second gif is done with `Activate Selections` command.
+-  Activate the cursors and selections with `Activate Selections` command.
 
 -  By default they are mapped to `PageDown` and `PageUp` respectively. If you need help in remapping them, check below.
 
@@ -43,7 +43,7 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 <br>
 
-### Other features and tips
+### Other features
 
 These features and tips are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
 
@@ -59,7 +59,7 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 <br>
 
--  If you place an inactive selection over another one, the existing inacitve selection will be removed:
+-  If you place an inactive selection over another, the existing one will be removed:
 
    ![Remove innactive selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExejJsdW1nMTZwdDBuOGxlMWc4aXFmMWo5dThzYmgxc3lhZXNqZWtrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/h4XtMmQyasU1rIAQPZ/giphy.gif)
 
@@ -81,6 +81,6 @@ These features and tips are usually intuitive and discoverable while you are usi
 
 These limitations are more technical and are handled to not constitute functionality breaking situations.
 
--  The VS Code Extension API makes it hard to create visuals that distinguish adjacent selections from one another. The workaround was to make the visuals for an inactive selection always having its cursor to the right. This way, it will be known in each situation where an inactive selection starts and where it ends.
+-  [Inactive selections visuals](https://github.com/srares13/keyboard-cursors-and-selections/issues/1)
 
--  The VS Code Extension API does not provide a built-in way to uniquely identify editors which have the same file. Hence, the inactive selections once set on an editor, they will appear on the other editors which have the same file.
+-  [Uniquely identify editors with the same file](https://github.com/srares13/keyboard-cursors-and-selections/issues/2)
