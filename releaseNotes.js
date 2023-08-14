@@ -3,7 +3,7 @@ const semver = require('semver')
 
 const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
 
-const VERSIONS_FOR_RELEASE_NOTES = ['1.1.0']
+const VERSIONS_FOR_RELEASE_NOTES = ['1.1.0', '1.1.1', '1.1.2']
 
 const provider = {
    provideTextDocumentContent(uri) {
@@ -18,14 +18,28 @@ const virtualDocUri = vscode.Uri.parse(`${scheme}:///KCS_RELEASE_NOTES.md`)
  * @param {vscode.ExtensionContext} context
  */
 
-const showReleaseNotes = (context) => {
+const showNotification = () => {
+   vscode.window
+      .showInformationMessage(
+         "KCS: New important changes!\nIf it's your first install, you won't have to check Release Notes.",
+         'Release Notes'
+      )
+      .then((selection) => {
+         if (selection === 'Release Notes') {
+            vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
+         }
+      })
+}
+
+const notifyAboutReleaseNotes = (context) => {
    const previousVersion = context.globalState.get('extensionVersion')
    const currentVersion = vscode.extensions.getExtension('srares13.kcs').packageJSON.version
+   console.log(`currentVersion: ${currentVersion}`)
 
    if (!previousVersion) {
-      context.globalState.update('extensionVersion', currentVersion)
+      showNotification()
 
-      return
+      context.globalState.update('extensionVersion', currentVersion)
    }
 
    if (semver.diff(previousVersion, currentVersion)) {
@@ -33,17 +47,11 @@ const showReleaseNotes = (context) => {
          semver.lt(previousVersion, currentVersion) &&
          VERSIONS_FOR_RELEASE_NOTES.includes(currentVersion)
       ) {
-         vscode.window
-            .showInformationMessage('KCS: New important changes', 'Release Notes')
-            .then((selection) => {
-               if (selection === 'Release Notes') {
-                  vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
-               }
-            })
+         showNotification()
       }
 
       context.globalState.update('extensionVersion', currentVersion)
    }
 }
 
-module.exports = { showReleaseNotes, virtualDocUri }
+module.exports = { notifyAboutReleaseNotes, virtualDocUri }

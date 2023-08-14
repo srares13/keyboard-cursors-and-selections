@@ -1,3 +1,11 @@
+### 1.1.2 (14 Aug 2023)
+
+-  Minor patch.
+
+### 1.1.1 (14 Aug 2023)
+
+-  Minor patch.
+
 ### 1.1.0 (14 Aug 2023)
 
 -  When you you place an inactive selection over another, it will only remove the existing one and not place a new one. The reason for this change is to have a universal behaviour. We already had this behaviour when you perfectly matched an inactive selection. But now you'll know what to expect in each situation when an inactive selection is placed over another (intersected in any way with another), it will only remove the existing one.

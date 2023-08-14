@@ -1,7 +1,7 @@
 const vscode = require('vscode')
 
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
-const { showReleaseNotes, virtualDocUri } = require('./releaseNotes')
+const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -21,7 +21,7 @@ const activate = (context) => {
 
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-   showReleaseNotes(context)
+   notifyAboutReleaseNotes(context)
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {

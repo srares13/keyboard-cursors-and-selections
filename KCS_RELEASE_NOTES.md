@@ -1,3 +1,5 @@
+**If it's your first time installing the extension, you wont have to read this.**
+
 ## 1.1.0 (14 Aug 2023)
 
 ### Behaviour changes
