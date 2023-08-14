@@ -5,6 +5,15 @@ const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
 
 const VERSIONS_FOR_RELEASE_NOTES = ['1.1.0']
 
+const provider = {
+   provideTextDocumentContent(uri) {
+      return releaseNotesContent
+   }
+}
+const scheme = 'releaseNotes'
+vscode.workspace.registerTextDocumentContentProvider(scheme, provider)
+const virtualDocUri = vscode.Uri.parse(`${scheme}:///KCS_RELEASE_NOTES.md`)
+
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -24,18 +33,6 @@ const showReleaseNotes = (context) => {
          semver.lt(previousVersion, currentVersion) &&
          VERSIONS_FOR_RELEASE_NOTES.includes(currentVersion)
       ) {
-         const provider = {
-            provideTextDocumentContent(uri) {
-               return releaseNotesContent
-            }
-         }
-
-         const scheme = 'releaseNotes'
-
-         vscode.workspace.registerTextDocumentContentProvider(scheme, provider)
-
-         const virtualDocUri = vscode.Uri.parse(`${scheme}:///KCS_RELEASE_NOTES.md`)
-
          vscode.window
             .showInformationMessage('KCS: New important changes', 'Release Notes')
             .then((selection) => {
@@ -49,4 +46,4 @@ const showReleaseNotes = (context) => {
    }
 }
 
-module.exports = { showReleaseNotes }
+module.exports = { showReleaseNotes, virtualDocUri }

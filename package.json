@@ -39,8 +39,8 @@
             "title": "KCS: Remove Inactive Selections"
          },
          {
-            "command": "kcs.someCommand",
-            "title": "KCS: Some Command"
+            "command": "kcs.showReleaseNotes",
+            "title": "KCS: Show Release Notes"
          }
       ],
       "keybindings": [

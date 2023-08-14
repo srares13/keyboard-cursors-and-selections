@@ -1,7 +1,7 @@
 const vscode = require('vscode')
 
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
-const { showReleaseNotes } = require('./releaseNotes')
+const { showReleaseNotes, virtualDocUri } = require('./releaseNotes')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -303,15 +303,18 @@ const activate = (context) => {
       }
    )
 
-   const someCommand = vscode.commands.registerCommand('kcs.someCommand', () => {
-      showReleaseNotes()
-   })
+   const showReleaseNotesDisposable = vscode.commands.registerCommand(
+      'kcs.showReleaseNotes',
+      () => {
+         vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
+      }
+   )
 
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
       removeInactiveSelections,
-      someCommand,
+      showReleaseNotesDisposable,
       cursorDecoration,
       selectionDecoration,
       eolSelectionDecoration,
