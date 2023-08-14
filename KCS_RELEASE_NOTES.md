@@ -1,4 +1,4 @@
-**If it's your first time installing the extension, you wont have to read this.**
+**If it's your first install, you won't have to check Release Notes.**
 
 ## 1.1.0 (14 Aug 2023)
 
