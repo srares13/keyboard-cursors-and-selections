@@ -2,6 +2,7 @@ const vscode = require('vscode')
 
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
+const { getUpdatedRanges } = require('./positionTracking')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -58,23 +59,37 @@ const activate = (context) => {
 
    vscode.workspace.onDidChangeTextDocument(
       (event) => {
-         const key = event.document.uri.toString()
+         // Previous logic before tracking
+         // const key = event.document.uri.toString()
+         // if (inactiveSelections[key]) {
+         //    delete inactiveSelections[key]
+         //    delete hiddenSelections[key]
+         //    vscode.window.visibleTextEditors.forEach((editor) => {
+         //       if (editor.document.uri.toString() === key) {
+         //          unsetMyDecorations(editor, {
+         //             cursorDecoration,
+         //             selectionDecoration,
+         //             eolSelectionDecoration
+         //          })
+         //       }
+         //    })
+         //    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+         // }
+         // Previous logic before tracking - end
 
-         if (inactiveSelections[key]) {
-            delete inactiveSelections[key]
-            delete hiddenSelections[key]
+         const docUriKey = event.document.uri.toString()
 
+         if (inactiveSelections[docUriKey]) {
+            inactiveSelections[docUriKey] = getUpdatedRanges(event, inactiveSelections[docUriKey])
             vscode.window.visibleTextEditors.forEach((editor) => {
-               if (editor.document.uri.toString() === key) {
-                  unsetMyDecorations(editor, {
+               if (editor.document.uri.toString() === docUriKey) {
+                  setMyDecorations(editor, inactiveSelections[docUriKey], {
                      cursorDecoration,
                      selectionDecoration,
                      eolSelectionDecoration
                   })
                }
             })
-
-            vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
          }
       },
       undefined,
@@ -257,19 +272,21 @@ const activate = (context) => {
          }
       })
 
-      hiddenSelections[docUriKey] = true
+      // Disabled for tracking testing purposes
+      // hiddenSelections[docUriKey] = true
 
-      vscode.window.visibleTextEditors.forEach((editor) => {
-         if (editor.document.uri.toString() === docUriKey) {
-            unsetMyDecorations(editor, {
-               cursorDecoration,
-               selectionDecoration,
-               eolSelectionDecoration
-            })
-         }
-      })
+      // vscode.window.visibleTextEditors.forEach((editor) => {
+      //    if (editor.document.uri.toString() === docUriKey) {
+      //       unsetMyDecorations(editor, {
+      //          cursorDecoration,
+      //          selectionDecoration,
+      //          eolSelectionDecoration
+      //       })
+      //    }
+      // })
 
-      vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+      // vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+      // Disabled for tracking testing purposes - end
 
       if (selections.length === 1 && selections[0].start.isEqual(selections[0].end)) {
          delete inactiveSelections[docUriKey]
