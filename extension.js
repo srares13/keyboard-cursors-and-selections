@@ -2,9 +2,9 @@ const vscode = require('vscode')
 
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
-const { getUpdatedRanges } = require('vscode-range-tracking')
+// const { getUpdatedRanges } = require('vscode-range-tracking')
 
-// const { getUpdatedRanges } = require('./rangeTracking')
+const { getUpdatedRanges } = require('./rangeTracking')
 
 /**
  * @param {vscode.ExtensionContext} context

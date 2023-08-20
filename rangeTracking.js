@@ -59,13 +59,18 @@ const updatePositionDueToInsertion = (line, character, change) => {
 const getUpdatedRanges = (ranges, changes, options) => {
    const toUpdateRanges = [...ranges]
 
+   // Sort all changes in order so that the first one is the change that's the closest to
+   // the end of the document, and the last one is the change that's the closest to
+   // the begining of the document.
    const sortedChanges = [...changes].sort((change1, change2) =>
       change2.range.start.compareTo(change1.range.start)
    )
 
    let outputChannel = undefined
+   let onIntersection = undefined
+   let intersectionType = undefined
    if (options) {
-      ;({ outputChannel } = options)
+      ;({ outputChannel, onIntersection, intersectionType } = options)
    }
 
    outputChannel && debugLoggingOnExtensionChannel(sortedChanges, toUpdateRanges, outputChannel)
@@ -81,7 +86,7 @@ const getUpdatedRanges = (ranges, changes, options) => {
 
          // change before marker
          if (change.range.end.isBefore(toUpdateRanges[i].start)) {
-            // change consisted in deleting
+            // change consisted in deletion
             if (!change.range.start.isEqual(change.range.end)) {
                // change range is also on the marker's line
                if (change.range.end.line === newRangeStartLine) {
@@ -93,7 +98,6 @@ const getUpdatedRanges = (ranges, changes, options) => {
 
                // change consisted also in insertion
                if (change.text) {
-                  // eslint-disable-next-line no-extra-semi
                   ;[newRangeStartLine, newRangeStartCharacter] = updatePositionDueToInsertion(
                      newRangeStartLine,
                      newRangeStartCharacter,
@@ -101,9 +105,8 @@ const getUpdatedRanges = (ranges, changes, options) => {
                   )
                }
 
-               // change consisted in insertion
+               // change consisted only in insertion
             } else {
-               // eslint-disable-next-line no-extra-semi
                ;[newRangeStartLine, newRangeStartCharacter] = updatePositionDueToInsertion(
                   newRangeStartLine,
                   newRangeStartCharacter,
