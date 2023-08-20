@@ -45,7 +45,7 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 ### Other features
 
-These features and tips are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
+These features are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
 
 <br>
 

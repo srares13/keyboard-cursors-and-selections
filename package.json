@@ -73,6 +73,7 @@
       "prettier": "~2.8.8"
    },
    "dependencies": {
-      "semver": "~7.5.4"
+      "semver": "~7.5.4",
+      "vscode-range-tracking": "file:../../NPM Packages/vscode-range-tracking/vscode-range-tracking-0.1.0.tgz"
    }
 }

@@ -2,7 +2,9 @@ const vscode = require('vscode')
 
 const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
-const { getUpdatedRanges } = require('./positionTracking')
+const { getUpdatedRanges } = require('vscode-range-tracking')
+
+// const { getUpdatedRanges } = require('./rangeTracking')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -79,18 +81,23 @@ const activate = (context) => {
 
          const docUriKey = event.document.uri.toString()
 
-         if (inactiveSelections[docUriKey]) {
-            inactiveSelections[docUriKey] = getUpdatedRanges(event, inactiveSelections[docUriKey])
-            vscode.window.visibleTextEditors.forEach((editor) => {
-               if (editor.document.uri.toString() === docUriKey) {
-                  setMyDecorations(editor, inactiveSelections[docUriKey], {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
-               }
-            })
+         if (!inactiveSelections[docUriKey]) {
+            return
          }
+
+         inactiveSelections[docUriKey] = getUpdatedRanges(
+            inactiveSelections[docUriKey],
+            event.contentChanges
+         )
+         vscode.window.visibleTextEditors.forEach((editor) => {
+            if (editor.document.uri.toString() === docUriKey) {
+               setMyDecorations(editor, inactiveSelections[docUriKey], {
+                  cursorDecoration,
+                  selectionDecoration,
+                  eolSelectionDecoration
+               })
+            }
+         })
       },
       undefined,
       disposables

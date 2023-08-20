@@ -1,61 +1,74 @@
 const vscode = require('vscode')
-const { outputChannel } = require('./utils')
 
-const updatePositionDueToInsertion = (positionLine, positionCharacter, contentChange) => {
-   // insertion is on the same line as the marker
-   if (contentChange.range.start.line === positionLine) {
-      // the insertion has at least one new line
-      if (contentChange.text.split('\n').length - 1 > 0) {
-         positionCharacter -= contentChange.range.start.character
+/**
+ * @param {vscode.TextDocumentContentChangeEvent[]} changes
+ * @param {vscode.Range[]} rangesToTrack
+ * @param {vscode.OutputChannel} outputChannel
+ */
+const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) => {
+   outputChannel.appendLine(`-------------------`)
+   outputChannel.appendLine(`-------------------`)
 
-         const index = contentChange.text.lastIndexOf('\n')
-         positionCharacter += contentChange.text.slice(index + 1, contentChange.text.length).length
-
-         // the insertion has no new lines
-      } else {
-         positionCharacter += contentChange.text.length
-      }
+   outputChannel.appendLine(`Change ranges`)
+   for (const change of changes) {
+      outputChannel.appendLine(
+         `    start: ${change.range.start.line} ${change.range.start.character}`
+      )
+      outputChannel.appendLine(`    end: ${change.range.end.line} ${change.range.end.character}`)
+      outputChannel.appendLine(`    -----`)
    }
 
-   positionLine += contentChange.text.split('\n').length - 1
-
-   return [positionLine, positionCharacter]
+   outputChannel.appendLine('Ranges to track')
+   for (const range of rangesToTrack) {
+      outputChannel.appendLine(`    start: ${range.start.line} ${range.start.character}`)
+      outputChannel.appendLine(`    end: ${range.end.line} ${range.end.character}`)
+      outputChannel.appendLine(`    -----`)
+   }
 }
 
 /**
- * @param {vscode.TextDocumentChangeEvent} event
- * @param {vscode.Range[]} ranges
+ * @param {vscode.TextDocumentContentChangeEvent} change
  */
-const getUpdatedRanges = (event, ranges) => {
-   const toUpdateRanges = [...ranges]
+const updatePositionDueToInsertion = (line, character, change) => {
+   // insertion is on the same line as the marker
+   if (change.range.start.line === line) {
+      // the insertion has at least one new line
+      if (change.text.split('\n').length - 1 > 0) {
+         character -= change.range.start.character
 
-   if (!toUpdateRanges) {
-      return
+         const index = change.text.lastIndexOf('\n')
+         character += change.text.slice(index + 1, change.text.length).length
+
+         // the insertion has no new lines
+      } else {
+         character += change.text.length
+      }
    }
 
-   const sortedChanges = [...event.contentChanges].sort((change1, change2) =>
+   line += change.text.split('\n').length - 1
+
+   return [line, character]
+}
+
+/**
+ * @param {vscode.Range[]} ranges
+ * @param {vscode.TextDocumentContentChangeEvent[]} changes
+ * @param {Object} options
+ * @param {vscode.OutputChannel} options.outputChannel
+ */
+const getUpdatedRanges = (ranges, changes, options) => {
+   const toUpdateRanges = [...ranges]
+
+   const sortedChanges = [...changes].sort((change1, change2) =>
       change2.range.start.compareTo(change1.range.start)
    )
 
-   // debug logging
-   outputChannel.appendLine(`-------------------`)
-   outputChannel.appendLine(`-------------------`)
-   outputChannel.appendLine(`Change ranges`)
-   for (const contentChange of sortedChanges) {
-      outputChannel.appendLine(
-         `    start: ${contentChange.range.start.line} ${contentChange.range.start.character}`
-      )
-      outputChannel.appendLine(
-         `    end: ${contentChange.range.end.line} ${contentChange.range.end.character}`
-      )
-      outputChannel.appendLine(`    -----`)
+   let outputChannel = undefined
+   if (options) {
+      ;({ outputChannel } = options)
    }
-   outputChannel.appendLine('Marker positions')
-   for (const markerRange of toUpdateRanges) {
-      outputChannel.appendLine(`    ${markerRange.start.line} ${markerRange.start.character}`)
-      outputChannel.appendLine(`    -----`)
-   }
-   // debug logging - end
+
+   outputChannel && debugLoggingOnExtensionChannel(sortedChanges, toUpdateRanges, outputChannel)
 
    for (const change of sortedChanges) {
       for (let i = 0; i < toUpdateRanges.length; i++) {
@@ -100,6 +113,7 @@ const getUpdatedRanges = (event, ranges) => {
 
             const newRangeStart = new vscode.Position(newRangeStartLine, newRangeStartCharacter)
 
+            // once the start position is calculated, we can infer the end position
             const lineDelta = toUpdateRanges[i].end.line - toUpdateRanges[i].start.line
             const characterDelta =
                toUpdateRanges[i].end.character - toUpdateRanges[i].start.character
@@ -116,6 +130,7 @@ const getUpdatedRanges = (event, ranges) => {
                   newRangeStart.character + characterDelta
                )
             }
+            //
 
             toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
          } else if (change.range.intersection(toUpdateRanges[i])) {

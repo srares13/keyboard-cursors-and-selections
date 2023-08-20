@@ -34,7 +34,6 @@ const showNotification = () => {
 const notifyAboutReleaseNotes = (context) => {
    const previousVersion = context.globalState.get('extensionVersion')
    const currentVersion = vscode.extensions.getExtension('srares13.kcs').packageJSON.version
-   console.log(`currentVersion: ${currentVersion}`)
 
    if (!previousVersion) {
       showNotification()
