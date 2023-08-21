@@ -87,7 +87,8 @@ const activate = (context) => {
 
          inactiveSelections[docUriKey] = getUpdatedRanges(
             inactiveSelections[docUriKey],
-            event.contentChanges
+            event.contentChanges,
+            { onDeletion: 'remove' }
          )
          vscode.window.visibleTextEditors.forEach((editor) => {
             if (editor.document.uri.toString() === docUriKey) {

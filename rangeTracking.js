@@ -29,7 +29,7 @@ const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) =
 /**
  * @param {vscode.TextDocumentContentChangeEvent} change
  */
-const updatePositionDueToInsertion = (line, character, change) => {
+const getUpdatedPositionDueToInsertion = (line, character, change) => {
    // insertion is on the same line as the marker
    if (change.range.start.line === line) {
       // the insertion has at least one new line
@@ -51,6 +51,40 @@ const updatePositionDueToInsertion = (line, character, change) => {
 }
 
 /**
+ * @param {vscode.Position} position
+ * @param {vscode.TextDocumentContentChangeEvent} change
+ */
+const getUpdatedPosition = (position, change) => {
+   let updatedLine = position.line
+   let updatedCharacter = position.character
+
+   // change before marker
+   if (change.range.end.isBeforeOrEqual(position)) {
+      // change consisted in deletion
+      if (!change.range.start.isEqual(change.range.end)) {
+         // change range is also on the marker's line
+         if (change.range.end.line === updatedLine) {
+            const characterDelta = change.range.end.character - change.range.start.character
+            updatedCharacter -= characterDelta
+         }
+         const lineDelta = change.range.end.line - change.range.start.line
+         updatedLine -= lineDelta
+      }
+
+      // change consisted in insertion
+      if (change.text) {
+         ;[updatedLine, updatedCharacter] = getUpdatedPositionDueToInsertion(
+            updatedLine,
+            updatedCharacter,
+            change
+         )
+      }
+   }
+
+   return new vscode.Position(updatedLine, updatedCharacter)
+}
+
+/**
  * @param {vscode.Range[]} ranges
  * @param {vscode.TextDocumentContentChangeEvent[]} changes
  * @param {Object} options
@@ -67,10 +101,10 @@ const getUpdatedRanges = (ranges, changes, options) => {
    )
 
    let outputChannel = undefined
-   let onIntersection = undefined
-   let intersectionType = undefined
+   let onAddition = undefined
+   let onDeletion = undefined
    if (options) {
-      ;({ outputChannel, onIntersection, intersectionType } = options)
+      ;({ outputChannel, onAddition, onDeletion } = options)
    }
 
    outputChannel && debugLoggingOnExtensionChannel(sortedChanges, toUpdateRanges, outputChannel)
@@ -81,64 +115,66 @@ const getUpdatedRanges = (ranges, changes, options) => {
             continue
          }
 
-         let newRangeStartLine = toUpdateRanges[i].start.line
-         let newRangeStartCharacter = toUpdateRanges[i].start.character
-
-         // change before marker
-         if (change.range.end.isBefore(toUpdateRanges[i].start)) {
-            // change consisted in deletion
+         if (
+            change.range.intersection(toUpdateRanges[i]) &&
+            !change.range.end.isEqual(toUpdateRanges[i].start) &&
+            !change.range.start.isEqual(toUpdateRanges[i].end)
+         ) {
             if (!change.range.start.isEqual(change.range.end)) {
-               // change range is also on the marker's line
-               if (change.range.end.line === newRangeStartLine) {
-                  const characterDelta = change.range.end.character - change.range.start.character
-                  newRangeStartCharacter -= characterDelta
+               if (onDeletion === 'remove') {
+                  toUpdateRanges[i] = null
+               } else if (onDeletion === 'shrink') {
+                  let newRangeStart = toUpdateRanges[i].start
+                  let newRangeEnd = toUpdateRanges[i].end
+
+                  if (change.range.contains(toUpdateRanges[i].start)) {
+                     newRangeStart = change.range.end
+                  }
+
+                  if (change.range.contains(toUpdateRanges[i].end)) {
+                     newRangeEnd = change.range.start
+                  }
+
+                  if (newRangeEnd.isBefore(newRangeStart)) {
+                     toUpdateRanges[i] = null
+                  } else {
+                     toUpdateRanges[i].start = newRangeStart
+                     toUpdateRanges[i].end = newRangeEnd
+                  }
                }
-               const lineDelta = change.range.end.line - change.range.start.line
-               newRangeStartLine -= lineDelta
-
-               // change consisted also in insertion
-               if (change.text) {
-                  ;[newRangeStartLine, newRangeStartCharacter] = updatePositionDueToInsertion(
-                     newRangeStartLine,
-                     newRangeStartCharacter,
-                     change
-                  )
-               }
-
-               // change consisted only in insertion
-            } else {
-               ;[newRangeStartLine, newRangeStartCharacter] = updatePositionDueToInsertion(
-                  newRangeStartLine,
-                  newRangeStartCharacter,
-                  change
-               )
             }
-
-            const newRangeStart = new vscode.Position(newRangeStartLine, newRangeStartCharacter)
-
-            // once the start position is calculated, we can infer the end position
-            const lineDelta = toUpdateRanges[i].end.line - toUpdateRanges[i].start.line
-            const characterDelta =
-               toUpdateRanges[i].end.character - toUpdateRanges[i].start.character
-
-            let newRangeEnd = undefined
-            if (lineDelta !== 0) {
-               newRangeEnd = new vscode.Position(
-                  newRangeStart.line + lineDelta,
-                  toUpdateRanges[i].end.character
-               )
-            } else {
-               newRangeEnd = new vscode.Position(
-                  newRangeStart.line,
-                  newRangeStart.character + characterDelta
-               )
-            }
-            //
-
-            toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
-         } else if (change.range.intersection(toUpdateRanges[i])) {
-            toUpdateRanges[i] = null
          }
+
+         if (!toUpdateRanges[i]) {
+            continue
+         }
+
+         const updatedRangeStart = getUpdatedPosition(toUpdateRanges[i].start, change)
+         const updatedRangeEnd = getUpdatedPosition(toUpdateRanges[i].end, change)
+
+         toUpdateRanges[i] = new vscode.Range(updatedRangeStart, updatedRangeEnd)
+
+         // const newRangeStart = new vscode.Position(newRangeStartLine, newRangeStartCharacter)
+
+         // // once the start position is calculated, we can infer the end position
+         // const lineDelta = toUpdateRanges[i].end.line - toUpdateRanges[i].start.line
+         // const characterDelta = toUpdateRanges[i].end.character - toUpdateRanges[i].start.character
+
+         // let newRangeEnd = undefined
+         // if (lineDelta !== 0) {
+         //    newRangeEnd = new vscode.Position(
+         //       newRangeStart.line + lineDelta,
+         //       toUpdateRanges[i].end.character
+         //    )
+         // } else {
+         //    newRangeEnd = new vscode.Position(
+         //       newRangeStart.line,
+         //       newRangeStart.character + characterDelta
+         //    )
+         // }
+         // //
+
+         // toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
       }
    }
 
