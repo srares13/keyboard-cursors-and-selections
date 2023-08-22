@@ -30,7 +30,7 @@ const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) =
  * @param {vscode.TextDocumentContentChangeEvent} change
  */
 const getUpdatedPositionDueToInsertion = (line, character, change) => {
-   // insertion is on the same line as the marker
+   // insertion is on the same line as the position-to-update
    if (change.range.start.line === line) {
       // the insertion has at least one new line
       if (change.text.split('\n').length - 1 > 0) {
@@ -55,33 +55,30 @@ const getUpdatedPositionDueToInsertion = (line, character, change) => {
  * @param {vscode.TextDocumentContentChangeEvent} change
  */
 const getUpdatedPosition = (position, change) => {
-   let updatedLine = position.line
-   let updatedCharacter = position.character
+   let newLine = position.line
+   let newCharacter = position.character
 
-   // change before marker
+   // change before position-to-update
    if (change.range.end.isBeforeOrEqual(position)) {
       // change consisted in deletion
       if (!change.range.start.isEqual(change.range.end)) {
-         // change range is also on the marker's line
-         if (change.range.end.line === updatedLine) {
+         // change range is also on the position-to-update's line
+         if (change.range.end.line === newLine) {
             const characterDelta = change.range.end.character - change.range.start.character
-            updatedCharacter -= characterDelta
+            newCharacter -= characterDelta
          }
+
          const lineDelta = change.range.end.line - change.range.start.line
-         updatedLine -= lineDelta
+         newLine -= lineDelta
       }
 
       // change consisted in insertion
       if (change.text) {
-         ;[updatedLine, updatedCharacter] = getUpdatedPositionDueToInsertion(
-            updatedLine,
-            updatedCharacter,
-            change
-         )
+         ;[newLine, newCharacter] = getUpdatedPositionDueToInsertion(newLine, newCharacter, change)
       }
    }
 
-   return new vscode.Position(updatedLine, updatedCharacter)
+   return new vscode.Position(newLine, newCharacter)
 }
 
 /**
@@ -128,18 +125,23 @@ const getUpdatedRanges = (ranges, changes, options) => {
                   let newRangeEnd = toUpdateRanges[i].end
 
                   if (change.range.contains(toUpdateRanges[i].start)) {
-                     newRangeStart = change.range.end
+                     newRangeStart = new vscode.Position(
+                        change.range.end.line,
+                        change.range.end.character
+                     )
                   }
 
                   if (change.range.contains(toUpdateRanges[i].end)) {
-                     newRangeEnd = change.range.start
+                     newRangeEnd = new vscode.Position(
+                        change.range.start.line,
+                        change.range.start.character
+                     )
                   }
 
                   if (newRangeEnd.isBefore(newRangeStart)) {
                      toUpdateRanges[i] = null
                   } else {
-                     toUpdateRanges[i].start = newRangeStart
-                     toUpdateRanges[i].end = newRangeEnd
+                     toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
                   }
                }
             }
