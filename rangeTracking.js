@@ -88,7 +88,7 @@ const getUpdatedPosition = (position, change) => {
  * @param {vscode.OutputChannel} options.outputChannel
  */
 const getUpdatedRanges = (ranges, changes, options) => {
-   const toUpdateRanges = [...ranges]
+   let toUpdateRanges = [...ranges]
 
    // Sort all changes in order so that the first one is the change that's the closest to
    // the end of the document, and the last one is the change that's the closest to
@@ -177,6 +177,29 @@ const getUpdatedRanges = (ranges, changes, options) => {
          // //
 
          // toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
+      }
+   }
+
+   for (let i = 0; i < toUpdateRanges.length - 1; i++) {
+      if (!toUpdateRanges[i]) {
+         continue
+      }
+
+      for (let j = i + 1; j < toUpdateRanges.length; j++) {
+         if (!toUpdateRanges[j]) {
+            continue
+         }
+
+         if (
+            toUpdateRanges[i].end.isEqual(toUpdateRanges[j].start) ||
+            toUpdateRanges[i].start.isEqual(toUpdateRanges[j].end)
+         ) {
+            if (toUpdateRanges[j].start.isEqual(toUpdateRanges[j].end)) {
+               toUpdateRanges[j] = null
+            } else if (toUpdateRanges[i].start.isEqual(toUpdateRanges[i].end)) {
+               toUpdateRanges[i] = null
+            }
+         }
       }
    }
 
