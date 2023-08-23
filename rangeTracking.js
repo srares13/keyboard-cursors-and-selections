@@ -145,6 +145,12 @@ const getUpdatedRanges = (ranges, changes, options) => {
                   }
                }
             }
+
+            if (change.text) {
+               if (onAddition === 'remove') {
+                  toUpdateRanges[i] = null
+               }
+            }
          }
 
          if (!toUpdateRanges[i]) {
@@ -152,7 +158,19 @@ const getUpdatedRanges = (ranges, changes, options) => {
          }
 
          const updatedRangeStart = getUpdatedPosition(toUpdateRanges[i].start, change)
-         const updatedRangeEnd = getUpdatedPosition(toUpdateRanges[i].end, change)
+         let updatedRangeEnd = undefined
+
+         if (
+            !toUpdateRanges[i].start.isEqual(toUpdateRanges[i].end) &&
+            toUpdateRanges[i].end.isEqual(change.range.end)
+         ) {
+            updatedRangeEnd = new vscode.Position(
+               toUpdateRanges[i].end.line,
+               toUpdateRanges[i].end.character
+            )
+         } else {
+            updatedRangeEnd = getUpdatedPosition(toUpdateRanges[i].end, change)
+         }
 
          toUpdateRanges[i] = new vscode.Range(updatedRangeStart, updatedRangeEnd)
 
