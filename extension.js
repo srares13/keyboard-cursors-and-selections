@@ -10,6 +10,8 @@ const { getUpdatedRanges } = require('./rangeTracking')
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
+   const outputChannel = vscode.window.createOutputChannel('KCS')
+
    /** @type {Object<string, vscode.Range[]>} */
    const inactiveSelections = {}
 
@@ -88,7 +90,7 @@ const activate = (context) => {
          inactiveSelections[docUriKey] = getUpdatedRanges(
             inactiveSelections[docUriKey],
             event.contentChanges,
-            { onDeletion: 'shrink', onAddition: 'extend' }
+            { outputChannel }
          )
          vscode.window.visibleTextEditors.forEach((editor) => {
             if (editor.document.uri.toString() === docUriKey) {

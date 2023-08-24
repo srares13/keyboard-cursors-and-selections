@@ -5,24 +5,46 @@ const vscode = require('vscode')
  * @param {vscode.Range[]} rangesToTrack
  * @param {vscode.OutputChannel} outputChannel
  */
-const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) => {
-   outputChannel.appendLine(`-------------------`)
-   outputChannel.appendLine(`-------------------`)
+const debugLoggingOnDebugConsole = (changes, rangesToTrack) => {
+   console.log(`-------------------`)
+   console.log(`-------------------`)
 
-   outputChannel.appendLine(`Change ranges`)
+   console.log(`Change ranges`)
    for (const change of changes) {
-      outputChannel.appendLine(
-         `    start: ${change.range.start.line} ${change.range.start.character}`
-      )
-      outputChannel.appendLine(`    end: ${change.range.end.line} ${change.range.end.character}`)
-      outputChannel.appendLine(`    -----`)
+      console.log(`    start: ${change.range.start.line} ${change.range.start.character}`)
+      console.log(`    end: ${change.range.end.line} ${change.range.end.character}`)
+      console.log(`    -----`)
    }
 
-   outputChannel.appendLine('Ranges to track')
+   console.log('Ranges to track')
    for (const range of rangesToTrack) {
-      outputChannel.appendLine(`    start: ${range.start.line} ${range.start.character}`)
-      outputChannel.appendLine(`    end: ${range.end.line} ${range.end.character}`)
-      outputChannel.appendLine(`    -----`)
+      console.log(`    start: ${range.start.line} ${range.start.character}`)
+      console.log(`    end: ${range.end.line} ${range.end.character}`)
+      console.log(`    -----`)
+   }
+}
+
+/**
+ * @param {vscode.TextDocumentContentChangeEvent[]} changes
+ * @param {vscode.Range[]} rangesToTrack
+ * @param {vscode.OutputChannel} outputChannel
+ */
+const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) => {
+   console.log(`-------------------`)
+   console.log(`-------------------`)
+
+   console.log(`Change ranges`)
+   for (const change of changes) {
+      console.log(`    start: ${change.range.start.line} ${change.range.start.character}`)
+      console.log(`    end: ${change.range.end.line} ${change.range.end.character}`)
+      console.log(`    -----`)
+   }
+
+   console.log('Ranges to track')
+   for (const range of rangesToTrack) {
+      console.log(`    start: ${range.start.line} ${range.start.character}`)
+      console.log(`    end: ${range.end.line} ${range.end.character}`)
+      console.log(`    -----`)
    }
 }
 
@@ -73,9 +95,19 @@ const getUpdatedPosition = (position, change) => {
 }
 
 /**
+ * @typedef {"remove"|"shrink"} onDeletion
+ */
+/**
+ * @typedef {"remove"|"extend"|"split"} onAddition
+ */
+
+/**
  * @param {vscode.Range[]} ranges
  * @param {vscode.TextDocumentContentChangeEvent[]} changes
  * @param {Object} options
+ * @param {onDeletion} options.onDeletion
+ * @param {onAddition} options.onAddition
+ * @param {boolean} options.debugConsole
  * @param {vscode.OutputChannel} options.outputChannel
  */
 const getUpdatedRanges = (ranges, changes, options) => {
@@ -88,13 +120,21 @@ const getUpdatedRanges = (ranges, changes, options) => {
       change2.range.start.compareTo(change1.range.start)
    )
 
-   let outputChannel = undefined
-   let onAddition = undefined
    let onDeletion = undefined
+   let onAddition = undefined
+   let debugConsole = undefined
+   let outputChannel = undefined
    if (options) {
-      ;({ outputChannel, onAddition, onDeletion } = options)
+      ;({ onDeletion, onAddition, debugConsole, outputChannel } = options)
+   }
+   if (!onDeletion) {
+      onDeletion = 'shrink'
+   }
+   if (!onAddition) {
+      onAddition = 'extend'
    }
 
+   debugConsole && debugLoggingOnDebugConsole(sortedChanges, toUpdateRanges)
    outputChannel && debugLoggingOnExtensionChannel(sortedChanges, toUpdateRanges, outputChannel)
 
    for (const change of sortedChanges) {
