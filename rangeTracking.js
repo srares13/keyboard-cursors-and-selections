@@ -27,30 +27,6 @@ const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) =
 }
 
 /**
- * @param {vscode.TextDocumentContentChangeEvent} change
- */
-const getUpdatedPositionDueToInsertion = (line, character, change) => {
-   // insertion is on the same line as the position-to-update
-   if (change.range.start.line === line) {
-      // the insertion has at least one new line
-      if (change.text.split('\n').length - 1 > 0) {
-         character -= change.range.start.character
-
-         const index = change.text.lastIndexOf('\n')
-         character += change.text.slice(index + 1, change.text.length).length
-
-         // the insertion has no new lines
-      } else {
-         character += change.text.length
-      }
-   }
-
-   line += change.text.split('\n').length - 1
-
-   return [line, character]
-}
-
-/**
  * @param {vscode.Position} position
  * @param {vscode.TextDocumentContentChangeEvent} change
  */
@@ -74,7 +50,22 @@ const getUpdatedPosition = (position, change) => {
 
       // change consisted in insertion
       if (change.text) {
-         ;[newLine, newCharacter] = getUpdatedPositionDueToInsertion(newLine, newCharacter, change)
+         // insertion is on the same line as the position-to-update
+         if (change.range.start.line === newLine) {
+            // the insertion has at least one new line
+            if (change.text.split('\n').length - 1 > 0) {
+               newCharacter -= change.range.start.character
+
+               const index = change.text.lastIndexOf('\n')
+               newCharacter += change.text.slice(index + 1, change.text.length).length
+
+               // the insertion has no new lines
+            } else {
+               newCharacter += change.text.length
+            }
+         }
+
+         newLine += change.text.split('\n').length - 1
       }
    }
 
@@ -125,17 +116,11 @@ const getUpdatedRanges = (ranges, changes, options) => {
                   let newRangeEnd = toUpdateRanges[i].end
 
                   if (change.range.contains(toUpdateRanges[i].start)) {
-                     newRangeStart = new vscode.Position(
-                        change.range.end.line,
-                        change.range.end.character
-                     )
+                     newRangeStart = change.range.end
                   }
 
                   if (change.range.contains(toUpdateRanges[i].end)) {
-                     newRangeEnd = new vscode.Position(
-                        change.range.start.line,
-                        change.range.start.character
-                     )
+                     newRangeEnd = change.range.start
                   }
 
                   if (newRangeEnd.isBefore(newRangeStart)) {
@@ -145,10 +130,27 @@ const getUpdatedRanges = (ranges, changes, options) => {
                   }
                }
             }
+         }
 
+         if (!toUpdateRanges[i]) {
+            continue
+         }
+
+         if (
+            change.range.intersection(toUpdateRanges[i]) &&
+            !change.range.end.isEqual(toUpdateRanges[i].start) &&
+            !change.range.start.isEqual(toUpdateRanges[i].end)
+         ) {
             if (change.text) {
                if (onAddition === 'remove') {
                   toUpdateRanges[i] = null
+               } else if (onAddition === 'split') {
+                  toUpdateRanges.splice(
+                     i + 1,
+                     0,
+                     new vscode.Range(change.range.start, toUpdateRanges[i].end)
+                  )
+                  toUpdateRanges[i] = new vscode.Range(toUpdateRanges[i].start, change.range.start)
                }
             }
          }
@@ -164,37 +166,12 @@ const getUpdatedRanges = (ranges, changes, options) => {
             !toUpdateRanges[i].start.isEqual(toUpdateRanges[i].end) &&
             toUpdateRanges[i].end.isEqual(change.range.end)
          ) {
-            updatedRangeEnd = new vscode.Position(
-               toUpdateRanges[i].end.line,
-               toUpdateRanges[i].end.character
-            )
+            updatedRangeEnd = toUpdateRanges[i].end
          } else {
             updatedRangeEnd = getUpdatedPosition(toUpdateRanges[i].end, change)
          }
 
          toUpdateRanges[i] = new vscode.Range(updatedRangeStart, updatedRangeEnd)
-
-         // const newRangeStart = new vscode.Position(newRangeStartLine, newRangeStartCharacter)
-
-         // // once the start position is calculated, we can infer the end position
-         // const lineDelta = toUpdateRanges[i].end.line - toUpdateRanges[i].start.line
-         // const characterDelta = toUpdateRanges[i].end.character - toUpdateRanges[i].start.character
-
-         // let newRangeEnd = undefined
-         // if (lineDelta !== 0) {
-         //    newRangeEnd = new vscode.Position(
-         //       newRangeStart.line + lineDelta,
-         //       toUpdateRanges[i].end.character
-         //    )
-         // } else {
-         //    newRangeEnd = new vscode.Position(
-         //       newRangeStart.line,
-         //       newRangeStart.character + characterDelta
-         //    )
-         // }
-         // //
-
-         // toUpdateRanges[i] = new vscode.Range(newRangeStart, newRangeEnd)
       }
    }
 
