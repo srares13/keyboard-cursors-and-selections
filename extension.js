@@ -88,25 +88,33 @@ const activate = (context) => {
                vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
             }
          } else {
-            if (!inactiveSelections[docUriKey]) {
-               return
-            }
+            if (hiddenSelections[docUriKey]) {
+               delete inactiveSelections[docUriKey]
+               delete hiddenSelections[docUriKey]
+            } else if (hiddenSelections[docUriKey] === false) {
+               inactiveSelections[docUriKey] = getUpdatedRanges(
+                  inactiveSelections[docUriKey],
+                  event.contentChanges,
+                  { outputChannel }
+               )
 
-            inactiveSelections[docUriKey] = getUpdatedRanges(
-               inactiveSelections[docUriKey],
-               event.contentChanges,
-               { outputChannel }
-            )
+               vscode.window.visibleTextEditors.forEach((editor) => {
+                  if (editor.document.uri.toString() === docUriKey) {
+                     setMyDecorations(editor, inactiveSelections[docUriKey], {
+                        cursorDecoration,
+                        selectionDecoration,
+                        eolSelectionDecoration
+                     })
+                  }
+               })
 
-            vscode.window.visibleTextEditors.forEach((editor) => {
-               if (editor.document.uri.toString() === docUriKey) {
-                  setMyDecorations(editor, inactiveSelections[docUriKey], {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
+               if (!inactiveSelections[docUriKey].length) {
+                  delete inactiveSelections[docUriKey]
+                  delete hiddenSelections[docUriKey]
+
+                  vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
                }
-            })
+            }
          }
       },
       undefined,
@@ -298,8 +306,8 @@ const activate = (context) => {
                })
             }
          })
-         hiddenSelections[docUriKey] = true
 
+         hiddenSelections[docUriKey] = true
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
       }
    )
