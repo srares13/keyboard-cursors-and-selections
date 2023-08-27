@@ -2,6 +2,7 @@ const vscode = require('vscode')
 const semver = require('semver')
 
 const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
+const { outputChannel } = require('./utils')
 
 const VERSIONS_FOR_RELEASE_NOTES = ['1.1.0', '1.1.1', '1.1.2']
 

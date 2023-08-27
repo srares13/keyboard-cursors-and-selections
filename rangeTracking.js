@@ -2,10 +2,10 @@ const vscode = require('vscode')
 
 /**
  * @param {vscode.TextDocumentContentChangeEvent[]} changes
- * @param {vscode.Range[]} rangesToTrack
- * @param {vscode.OutputChannel} outputChannel
+ * @param {vscode.Range[]} toUpdateRanges
+ * @param {vscode.Range[]} updatedRanges
  */
-const debugLoggingOnDebugConsole = (changes, rangesToTrack) => {
+const debugLoggingOnDebugConsole = (changes, toUpdateRanges, updatedRanges) => {
    console.log(`-------------------`)
    console.log(`-------------------`)
 
@@ -16,8 +16,15 @@ const debugLoggingOnDebugConsole = (changes, rangesToTrack) => {
       console.log(`    -----`)
    }
 
-   console.log('Ranges to track')
-   for (const range of rangesToTrack) {
+   console.log('To update ranges')
+   for (const range of toUpdateRanges) {
+      console.log(`    start: ${range.start.line} ${range.start.character}`)
+      console.log(`    end: ${range.end.line} ${range.end.character}`)
+      console.log(`    -----`)
+   }
+
+   console.log('Updated ranges')
+   for (const range of updatedRanges) {
       console.log(`    start: ${range.start.line} ${range.start.character}`)
       console.log(`    end: ${range.end.line} ${range.end.character}`)
       console.log(`    -----`)
@@ -26,25 +33,35 @@ const debugLoggingOnDebugConsole = (changes, rangesToTrack) => {
 
 /**
  * @param {vscode.TextDocumentContentChangeEvent[]} changes
- * @param {vscode.Range[]} rangesToTrack
+ * @param {vscode.Range[]} toUpdateRanges
+ * @param {vscode.Range[]} updatedRanges
  * @param {vscode.OutputChannel} outputChannel
  */
-const debugLoggingOnExtensionChannel = (changes, rangesToTrack, outputChannel) => {
-   console.log(`-------------------`)
-   console.log(`-------------------`)
+const debugLoggingOnExtensionChannel = (changes, toUpdateRanges, updatedRanges, outputChannel) => {
+   outputChannel.appendLine(`-------------------`)
+   outputChannel.appendLine(`-------------------`)
 
-   console.log(`Change ranges`)
+   outputChannel.appendLine(`Change ranges`)
    for (const change of changes) {
-      console.log(`    start: ${change.range.start.line} ${change.range.start.character}`)
-      console.log(`    end: ${change.range.end.line} ${change.range.end.character}`)
-      console.log(`    -----`)
+      outputChannel.appendLine(
+         `    start: ${change.range.start.line} ${change.range.start.character}`
+      )
+      outputChannel.appendLine(`    end: ${change.range.end.line} ${change.range.end.character}`)
+      outputChannel.appendLine(`    -----`)
    }
 
-   console.log('Ranges to track')
-   for (const range of rangesToTrack) {
-      console.log(`    start: ${range.start.line} ${range.start.character}`)
-      console.log(`    end: ${range.end.line} ${range.end.character}`)
-      console.log(`    -----`)
+   outputChannel.appendLine('To update ranges')
+   for (const range of toUpdateRanges) {
+      outputChannel.appendLine(`    start: ${range.start.line} ${range.start.character}`)
+      outputChannel.appendLine(`    end: ${range.end.line} ${range.end.character}`)
+      outputChannel.appendLine(`    -----`)
+   }
+
+   outputChannel.appendLine('Updated ranges')
+   for (const range of updatedRanges) {
+      outputChannel.appendLine(`    start: ${range.start.line} ${range.start.character}`)
+      outputChannel.appendLine(`    end: ${range.end.line} ${range.end.character}`)
+      outputChannel.appendLine(`    -----`)
    }
 }
 
@@ -133,9 +150,6 @@ const getUpdatedRanges = (ranges, changes, options) => {
    if (!onAddition) {
       onAddition = 'extend'
    }
-
-   debugConsole && debugLoggingOnDebugConsole(sortedChanges, toUpdateRanges)
-   outputChannel && debugLoggingOnExtensionChannel(sortedChanges, toUpdateRanges, outputChannel)
 
    for (const change of sortedChanges) {
       for (let i = 0; i < toUpdateRanges.length; i++) {
@@ -239,6 +253,10 @@ const getUpdatedRanges = (ranges, changes, options) => {
    }
 
    const updatedRanges = toUpdateRanges.filter((range) => range)
+
+   debugConsole && debugLoggingOnDebugConsole(sortedChanges, ranges, updatedRanges)
+   outputChannel &&
+      debugLoggingOnExtensionChannel(sortedChanges, ranges, updatedRanges, outputChannel)
 
    return updatedRanges
 }

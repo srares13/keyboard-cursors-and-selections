@@ -1,4 +1,5 @@
 const vscode = require('vscode')
+
 const outputChannel = vscode.window.createOutputChannel('KCS')
 
 const createDecorations = (fontSize) => {
@@ -79,8 +80,8 @@ const unsetMyDecorations = (
 }
 
 module.exports = {
+   outputChannel,
    createDecorations,
    setMyDecorations,
-   unsetMyDecorations,
-   outputChannel
+   unsetMyDecorations
 }
