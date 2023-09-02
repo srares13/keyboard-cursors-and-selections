@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
-   "version": "1.1.2",
+   "version": "1.2.0",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -68,18 +68,7 @@
             "key": "alt+shift+z",
             "when": "editorTextFocus"
          }
-      ],
-      "configuration": {
-         "type": "object",
-         "title": "KCS",
-         "properties": {
-            "kcs.selectionsReactToDocumentEdits": {
-               "type": "boolean",
-               "default": false,
-               "description": "Experimental: Selections will change positions and dimensions according to document edits."
-            }
-         }
-      }
+      ]
    },
    "scripts": {
       "lint": "eslint .",
