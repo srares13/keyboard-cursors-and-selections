@@ -5,5 +5,6 @@ bundle
 teste.js
 teste2.js
 teste3.js
+positionTracking.js
 *.vsix
 

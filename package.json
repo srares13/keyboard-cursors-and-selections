@@ -76,7 +76,7 @@
             "kcs.selectionsReactToDocumentEdits": {
                "type": "boolean",
                "default": false,
-               "description": "Selections will change positions and dimensions according to document edits."
+               "description": "Experimental: Selections will change positions and dimensions according to document edits."
             }
          }
       }
@@ -94,6 +94,6 @@
    },
    "dependencies": {
       "semver": "~7.5.4",
-      "vscode-position-tracking": "file:../../NPM Packages/vscode-position-tracking/vscode-position-tracking-0.1.0.tgz"
+      "vscode-position-tracking": "~0.1.0"
    }
 }

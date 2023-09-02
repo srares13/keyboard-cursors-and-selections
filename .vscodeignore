@@ -20,4 +20,4 @@ utils.js
 esbuild.js
 KCS_RELEASE_NOTES.md
 releaseNotes.js
-rangeTracking.js
+positionTracking.js

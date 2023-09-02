@@ -8,7 +8,7 @@ const {
    unsetMyDecorations
 } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
-// const { getUpdatedRanges } = require('./rangeTracking')
+// const { getUpdatedRanges } = require('./positionTracking')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -95,7 +95,9 @@ const activate = (context) => {
                inactiveSelections[docUriKey] = getUpdatedRanges(
                   inactiveSelections[docUriKey],
                   event.contentChanges,
-                  { outputChannel }
+                  {
+                     outputChannel
+                  }
                )
 
                vscode.window.visibleTextEditors.forEach((editor) => {
