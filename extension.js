@@ -20,6 +20,8 @@ const activate = (context) => {
    /** @type {Object<string, boolean>} */
    const hiddenSelections = {}
 
+   const actions = []
+
    let { cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
@@ -145,13 +147,16 @@ const activate = (context) => {
             inactiveSelections[docUriKey] = []
          }
 
-         const currentInactiveSelections = inactiveSelections[docUriKey]
+         // /** @type {vscode.Range[]} */
+         const action = Action()
+
+         let currentInactiveSelections = inactiveSelections[docUriKey]
             ? [...inactiveSelections[docUriKey]]
             : []
 
          /** @type {vscode.Range[]} */
          const newInactiveSelections = []
-         const currentInactiveSelectionsWithRemoved = [...currentInactiveSelections]
+         let commandShouldAddInactiveSelections = true
 
          editor.selections.forEach((selection) => {
             let addInactiveSelection = true
@@ -160,16 +165,13 @@ const activate = (context) => {
                if (selection.intersection(currentInactiveSelections[i])) {
                   if (
                      selection.start.isEqual(selection.end) ||
-                     currentInactiveSelections[i].start.isEqual(currentInactiveSelections[i].end)
+                     currentInactiveSelections[i].start.isEqual(currentInactiveSelections[i].end) ||
+                     (!selection.start.isEqual(currentInactiveSelections[i].end) &&
+                        !selection.end.isEqual(currentInactiveSelections[i].start))
                   ) {
-                     currentInactiveSelectionsWithRemoved[i] = null
+                     currentInactiveSelections[i] = null
                      addInactiveSelection = false
-                  } else if (
-                     !selection.start.isEqual(currentInactiveSelections[i].end) &&
-                     !selection.end.isEqual(currentInactiveSelections[i].start)
-                  ) {
-                     currentInactiveSelectionsWithRemoved[i] = null
-                     addInactiveSelection = false
+                     commandShouldAddInactiveSelections = false
                   }
                }
             }
@@ -180,18 +182,32 @@ const activate = (context) => {
             }
          })
 
-         const unremovedInactiveSelections = currentInactiveSelectionsWithRemoved.filter(
-            (inactiveSelection) => inactiveSelection
-         )
-
-         if (unremovedInactiveSelections.length === currentInactiveSelections.length) {
+         if (commandShouldAddInactiveSelections) {
             newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
                inactiveSelection1.start.compareTo(inactiveSelection2.start)
             )
-            inactiveSelections[docUriKey] =
-               unremovedInactiveSelections.concat(newInactiveSelections)
+
+            action.type = 'inactiveSelectionsPlaced'
+            action.indexToDeleteFrom = currentInactiveSelections.length
+            action.ranges = newInactiveSelections
+
+            currentInactiveSelections.push(...newInactiveSelections)
+            inactiveSelections[docUriKey] = currentInactiveSelections
          } else {
-            inactiveSelections[docUriKey] = unremovedInactiveSelections
+            action.type = 'inactiveSelectionsRemoved'
+
+            currentInactiveSelections = currentInactiveSelections.filter((inactiveSelection, i) => {
+               if (inactiveSelection) {
+                  return true
+               } else {
+                  action.ranges.push(inactiveSelections[i])
+                  return false
+               }
+            })
+
+            action.indexToDeleteFrom = currentInactiveSelections.length
+
+            inactiveSelections[docUriKey] = currentInactiveSelections
          }
 
          vscode.window.visibleTextEditors.forEach((editor) => {
@@ -286,31 +302,14 @@ const activate = (context) => {
       }
    )
 
-   const placeLastInactiveSelections = vscode.commands.registerCommand(
-      'kcs.placeLastInactiveSelections',
-      () => {
-         const editor = vscode.window.activeTextEditor
-         if (!editor) {
-            return
-         }
+   const undoInactiveSelections = vscode.commands.registerCommand(
+      'kcs.undoInactiveSelections',
+      () => {}
+   )
 
-         const docUriKey = editor.document.uri.toString()
-
-         if (hiddenSelections[docUriKey]) {
-            vscode.window.visibleTextEditors.forEach((editor) => {
-               if (editor.document.uri.toString() === docUriKey) {
-                  setMyDecorations(editor, inactiveSelections[docUriKey], {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
-               }
-            })
-
-            hiddenSelections[docUriKey] = false
-            vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
-         }
-      }
+   const redoInactiveSelections = vscode.commands.registerCommand(
+      'kcs.redoInactiveSelections',
+      () => {}
    )
 
    context.subscriptions.push(
@@ -318,7 +317,8 @@ const activate = (context) => {
       activateSelections,
       removeInactiveSelections,
       showReleaseNotesDisposable,
-      placeLastInactiveSelections,
+      undoInactiveSelections,
+      redoInactiveSelections,
       cursorDecoration,
       selectionDecoration,
       eolSelectionDecoration,

@@ -64,8 +64,13 @@
             "when": "editorTextFocus && inactiveSelections && !findWidgetVisible && !suggestWidgetVisible && !suggestWidgetMultipleSuggestions && !renameInputVisible && !referenceSearchVisible && !inReferenceSearchEditor && !quickFixWidgetVisible && !parameterHintsVisible && !parameterHintsMultipleSignatures && !editorHasSelection && !editorHasMultipleSelections && !notificationCenterVisible && !notificationToastsVisible"
          },
          {
-            "command": "kcs.placeLastInactiveSelections",
+            "command": "kcs.undoInactiveSelection",
             "key": "alt+shift+z",
+            "when": "editorTextFocus"
+         },
+         {
+            "command": "kcs.redoInactiveSelection",
+            "key": "alt+shift+y",
             "when": "editorTextFocus"
          }
       ]
