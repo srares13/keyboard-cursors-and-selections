@@ -79,9 +79,18 @@ const unsetMyDecorations = (
    editor.setDecorations(eolSelectionDecoration, [])
 }
 
+const Action = () => {
+   return {
+      type: undefined,
+      ranges: [],
+      indexToDeleteFrom: undefined
+   }
+}
+
 module.exports = {
    outputChannel,
    createDecorations,
    setMyDecorations,
-   unsetMyDecorations
+   unsetMyDecorations,
+   Action
 }
