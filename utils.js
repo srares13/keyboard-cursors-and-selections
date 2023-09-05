@@ -2,6 +2,23 @@ const vscode = require('vscode')
 
 const outputChannel = vscode.window.createOutputChannel('KCS')
 
+/**
+ * @callback SetMyDecorations
+ * @param {vscode.TextEditor} editor
+ * @param {vscode.Range[]} inactiveSelections
+ * @return {void}
+ */
+
+/**
+ * @callback UnsetMyDecorations
+ * @param {vscode.TextEditor} editor
+ * @return {void}
+ */
+
+/**
+ * @param {number} fontSize
+ * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations }}
+ */
 const createDecorations = (fontSize) => {
    const cursorDecorationBorder = 0.073333 * fontSize + 'px'
    const cursorDecorationMargin = -0.073333 * fontSize * 2 + 'px'
@@ -25,58 +42,51 @@ const createDecorations = (fontSize) => {
       backgroundColor: 'hsla(299, 69%, 33%, 0.6)'
    })
 
-   return {
-      cursorDecoration,
-      selectionDecoration,
-      eolSelectionDecoration
-   }
-}
+   /**
+    * @type {SetMyDecorations}
+    */
+   const setMyDecorations = (editor, inactiveSelections) => {
+      const cursorDecorationRanges = []
+      const selectionDecorationRanges = []
+      const eolSelectionDecorationRanges = []
 
-/**
- * @param {vscode.TextEditor} editor
- */
-const setMyDecorations = (
-   editor,
-   inactiveSelections,
-   { cursorDecoration, selectionDecoration, eolSelectionDecoration }
-) => {
-   const cursorDecorationRanges = []
-   const selectionDecorationRanges = []
-   const eolSelectionDecorationRanges = []
+      inactiveSelections.forEach((range) => {
+         if (range.start.isEqual(range.end)) {
+            cursorDecorationRanges.push(range)
+         } else {
+            selectionDecorationRanges.push(range)
+            cursorDecorationRanges.push(new vscode.Range(range.end, range.end))
 
-   inactiveSelections.forEach((range) => {
-      if (range.start.isEqual(range.end)) {
-         cursorDecorationRanges.push(range)
-      } else {
-         selectionDecorationRanges.push(range)
-         cursorDecorationRanges.push(new vscode.Range(range.end, range.end))
+            for (
+               let lineNumber = range.start.line;
+               range.end.line - lineNumber !== 0;
+               lineNumber++
+            ) {
+               const line = editor.document.lineAt(lineNumber)
 
-         for (let lineNumber = range.start.line; range.end.line - lineNumber !== 0; lineNumber++) {
-            const line = editor.document.lineAt(lineNumber)
+               const position = new vscode.Position(lineNumber, line.range.end.character)
+               const range = new vscode.Range(position, position)
 
-            const position = new vscode.Position(lineNumber, line.range.end.character)
-            const range = new vscode.Range(position, position)
-
-            eolSelectionDecorationRanges.push(range)
+               eolSelectionDecorationRanges.push(range)
+            }
          }
-      }
-   })
+      })
 
-   editor.setDecorations(cursorDecoration, cursorDecorationRanges)
-   editor.setDecorations(selectionDecoration, selectionDecorationRanges)
-   editor.setDecorations(eolSelectionDecoration, eolSelectionDecorationRanges)
-}
+      editor.setDecorations(cursorDecoration, cursorDecorationRanges)
+      editor.setDecorations(selectionDecoration, selectionDecorationRanges)
+      editor.setDecorations(eolSelectionDecoration, eolSelectionDecorationRanges)
+   }
 
-/**
- * @param {vscode.TextEditor} editor
- */
-const unsetMyDecorations = (
-   editor,
-   { cursorDecoration, selectionDecoration, eolSelectionDecoration }
-) => {
-   editor.setDecorations(cursorDecoration, [])
-   editor.setDecorations(selectionDecoration, [])
-   editor.setDecorations(eolSelectionDecoration, [])
+   /**
+    * @type {UnsetMyDecorations}
+    */
+   const unsetMyDecorations = (editor) => {
+      editor.setDecorations(cursorDecoration, [])
+      editor.setDecorations(selectionDecoration, [])
+      editor.setDecorations(eolSelectionDecoration, [])
+   }
+
+   return { setMyDecorations, unsetMyDecorations }
 }
 
 const Action = () => {
@@ -90,7 +100,5 @@ const Action = () => {
 module.exports = {
    outputChannel,
    createDecorations,
-   setMyDecorations,
-   unsetMyDecorations,
    Action
 }

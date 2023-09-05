@@ -1,16 +1,13 @@
+// #region | External imports
 const vscode = require('vscode')
-const { getUpdatedRanges } = require('vscode-position-tracking')
+// #endregion
 
-const {
-   outputChannel,
-   createDecorations,
-   setMyDecorations,
-   unsetMyDecorations,
-   Action
-} = require('./utils')
+// #region | Source code imports
+const { createDecorations, Action } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
-// const { getUpdatedRanges } = require('./positionTracking')
+// #endregion
 
+// #region | Types
 /**
  * @typedef {Object} Action
  * @property {string|undefined} type
@@ -19,53 +16,51 @@ const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
  */
 
 /**
+ * @typedef {Object} MainData
+ * @property {vscode.Range[]} inactiveSelections
+ * @property {Action[]} actions
+ */
+// #endregion
+
+/**
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
+   // #region | Global Data
+   /** @type {Object<string, MainData>} */
+   const mainData = {}
+
    /** @type {Object<string, vscode.Range[]>} */
    const inactiveSelections = {}
 
-   /** @type {Object<string, boolean>} */
-   const hiddenSelections = {}
-
-   /** @type {Action[]} */
-   const actions = []
-
-   let { cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
+   let { setMyDecorations, unsetMyDecorations } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
 
    const disposables = []
 
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+   // #endregion
 
    notifyAboutReleaseNotes(context)
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
          if (event.affectsConfiguration('editor.fontSize')) {
-            vscode.window.visibleTextEditors.forEach((editor) => {
-               const docUriKey = editor.document.uri.toString()
-               if (hiddenSelections[docUriKey] === false) {
-                  unsetMyDecorations(editor, {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
-               }
-            })
-            ;({ cursorDecoration, selectionDecoration, eolSelectionDecoration } = createDecorations(
+            const unsetMyPreviousDecorations = unsetMyDecorations
+
+            ;({ setMyDecorations, unsetMyDecorations } = createDecorations(
                vscode.workspace.getConfiguration('editor').get('fontSize')
             ))
 
             vscode.window.visibleTextEditors.forEach((editor) => {
                const docUriKey = editor.document.uri.toString()
-               if (hiddenSelections[docUriKey] === false) {
-                  setMyDecorations(editor, inactiveSelections[docUriKey], {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
+               const data = mainData[docUriKey]
+
+               if (data && data.inactiveSelections.length) {
+                  unsetMyPreviousDecorations(editor)
+
+                  setMyDecorations(editor, data.inactiveSelections)
                }
             })
          }
@@ -100,8 +95,8 @@ const activate = (context) => {
    )
 
    vscode.window.onDidChangeVisibleTextEditors(
-      (editors) => {
-         editors.forEach((editor) => {
+      (visibleEditors) => {
+         visibleEditors.forEach((editor) => {
             const docUriKey = editor.document.uri.toString()
 
             if (hiddenSelections[docUriKey] === false) {
