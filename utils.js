@@ -89,11 +89,16 @@ const createDecorations = (fontSize) => {
    return { setMyDecorations, unsetMyDecorations }
 }
 
-const Action = () => {
+/**
+ * @param {'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'} type
+ * @param {vscode.Range[]} ranges
+ * @param {number} elementsCountToRemove
+ */
+const Action = (type, ranges, elementsCountToRemove) => {
    return {
-      type: undefined,
-      ranges: [],
-      indexToDeleteFrom: undefined
+      type,
+      ranges,
+      elementsCountToRemove
    }
 }
 
