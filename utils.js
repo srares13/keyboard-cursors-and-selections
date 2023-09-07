@@ -90,6 +90,17 @@ const createDecorations = (fontSize) => {
 }
 
 /**
+ * @return {{inactiveSelections: vscode.Range[], actions: Action[], actionIndex: number}}
+ */
+const MainDataObject = () => {
+   return {
+      inactiveSelections: [],
+      actions: [],
+      actionIndex: undefined
+   }
+}
+
+/**
  * @param {'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'} type
  * @param {vscode.Range[]} ranges
  * @param {number} elementsCountToRemove
@@ -105,5 +116,6 @@ const Action = (type, ranges, elementsCountToRemove) => {
 module.exports = {
    outputChannel,
    createDecorations,
+   MainDataObject,
    Action
 }
