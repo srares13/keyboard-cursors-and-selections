@@ -96,7 +96,7 @@ const MainDataObject = () => {
    return {
       inactiveSelections: [],
       actions: [],
-      actionIndex: undefined
+      actionIndex: -1
    }
 }
 
@@ -105,11 +105,11 @@ const MainDataObject = () => {
  * @param {vscode.Range[]} ranges
  * @param {number} elementsCountToRemove
  */
-const Action = (type, ranges, elementsCountToRemove) => {
+const Action = () => {
    return {
-      type,
-      ranges,
-      elementsCountToRemove
+      type: undefined,
+      ranges: [],
+      elementsCountToRemove: undefined
    }
 }
 

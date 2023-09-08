@@ -19,7 +19,7 @@ const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
  * @typedef {Object} MainDataObject
  * @property {vscode.Range[]} inactiveSelections
  * @property {Action[]} actions
- * @property {number} actionIndex
+ * @property {number|undefined} actionIndex
  */
 // #endregion
 
@@ -77,14 +77,17 @@ const activate = (context) => {
             return
          }
 
-         const action = Action(
-            'inactiveSelectionsRemoved',
-            eventEditorData.inactiveSelections,
-            eventEditorData.inactiveSelections.length
-         )
-         eventEditorData.actions.push(action)
+         // const action = Action(
+         //    'inactiveSelectionsRemoved',
+         //    eventEditorData.inactiveSelections,
+         //    eventEditorData.inactiveSelections.length
+         // )
+         // eventEditorData.actions.push(action)
+         // eventEditorData.actionIndex++
 
          eventEditorData.inactiveSelections.length = 0
+         eventEditorData.actions.length = 0
+         eventEditorData.actionIndex = -1
 
          for (const editor of vscode.window.visibleTextEditors) {
             if (editor.document.uri.toString() === eventDocUri) {
@@ -138,18 +141,19 @@ const activate = (context) => {
       () => {
          const activeEditor = vscode.window.activeTextEditor
          const activeDocUri = activeEditor.document.uri.toString()
+
+         if (!mainData[activeDocUri]) {
+            mainData[activeDocUri] = MainDataObject()
+         }
          let activeEditorData = mainData[activeDocUri]
 
-         if (!activeEditorData) {
-            activeEditorData = MainDataObject()
-         }
          const action = Action()
 
          let currentInactiveSelections = [...activeEditorData.inactiveSelections]
          const newInactiveSelections = []
          let commandShouldAddInactiveSelections = true
 
-         activeEditor.selections.forEach((selection) => {
+         for (const selection of activeEditor.selections) {
             let addInactiveSelection = true
 
             for (let i = 0; i < currentInactiveSelections.length; i++) {
@@ -171,11 +175,11 @@ const activate = (context) => {
                }
             }
 
-            if (addInactiveSelection) {
+            if (commandShouldAddInactiveSelections && addInactiveSelection) {
                const range = new vscode.Range(selection.start, selection.end)
                newInactiveSelections.push(range)
             }
-         })
+         }
 
          if (commandShouldAddInactiveSelections) {
             newInactiveSelections.sort((inactiveSelection1, inactiveSelection2) =>
@@ -183,11 +187,11 @@ const activate = (context) => {
             )
 
             action.type = 'inactiveSelectionsPlaced'
-            action.indexToDeleteFrom = currentInactiveSelections.length
             action.ranges = newInactiveSelections
+            action.elementsCountToRemove = newInactiveSelections.length
 
             currentInactiveSelections.push(...newInactiveSelections)
-            inactiveSelections[activeDocUri] = currentInactiveSelections
+            activeEditorData.inactiveSelections = currentInactiveSelections
          } else {
             action.type = 'inactiveSelectionsRemoved'
 
@@ -195,74 +199,56 @@ const activate = (context) => {
                if (inactiveSelection) {
                   return true
                } else {
-                  action.ranges.push(inactiveSelections[i])
+                  action.ranges.push(activeEditorData.inactiveSelections[i])
                   return false
                }
             })
 
-            action.indexToDeleteFrom = currentInactiveSelections.length
+            action.elementsCountToRemove = action.ranges.length
 
-            inactiveSelections[activeDocUri] = currentInactiveSelections
+            activeEditorData.inactiveSelections = currentInactiveSelections
          }
 
-         actions.push(action)
+         activeEditorData.actionIndex++
+         activeEditorData.actions.splice(activeEditorData.actionIndex)
+         activeEditorData.actions.push(action)
 
-         vscode.window.visibleTextEditors.forEach((editor) => {
+         for (const editor of vscode.window.visibleTextEditors) {
             if (editor.document.uri.toString() === activeDocUri) {
-               setMyDecorations(editor, inactiveSelections[activeDocUri], {
-                  cursorDecoration,
-                  selectionDecoration,
-                  eolSelectionDecoration
-               })
+               setMyDecorations(editor, activeEditorData.inactiveSelections)
             }
-         })
+         }
 
-         if (inactiveSelections[activeDocUri].length) {
+         if (activeEditorData.inactiveSelections.length) {
             vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
          } else {
-            delete inactiveSelections[activeDocUri]
-
             vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
          }
       }
    )
 
    const activateSelections = vscode.commands.registerCommand('kcs.activateSelections', () => {
-      const editor = vscode.window.activeTextEditor
-      if (!editor) {
+      const activeDocUri = vscode.window.activeTextEditor.document.uri.toString()
+      const activeEditorData = mainData[activeDocUri]
+
+      if (!activeEditorData || !activeEditorData.inactiveSelections.length) {
          return
       }
 
-      const docUriKey = editor.document.uri.toString()
-      if (!inactiveSelections[docUriKey]) {
-         return
-      }
-
-      const selections = inactiveSelections[docUriKey].map(
+      const selections = activeEditorData.inactiveSelections.map(
          (range) => new vscode.Selection(range.start, range.end)
       )
 
-      vscode.window.visibleTextEditors.forEach((editor) => {
-         if (editor.document.uri.toString() === docUriKey) {
+      for (const editor of vscode.window.visibleTextEditors) {
+         if (editor.document.uri.toString() === activeDocUri) {
             editor.selections = selections
+            unsetMyDecorations(editor)
          }
-      })
+      }
 
-      // Can be disabled for tracking testing purposes
-      delete inactiveSelections[docUriKey]
-
-      vscode.window.visibleTextEditors.forEach((editor) => {
-         if (editor.document.uri.toString() === docUriKey) {
-            unsetMyDecorations(editor, {
-               cursorDecoration,
-               selectionDecoration,
-               eolSelectionDecoration
-            })
-         }
-      })
+      activeEditorData.inactiveSelections.length = 0
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-      // Can be disabled for tracking testing purposes - end
    })
 
    const removeInactiveSelections = vscode.commands.registerCommand(
@@ -300,36 +286,32 @@ const activate = (context) => {
    const undoInactiveSelections = vscode.commands.registerCommand(
       'kcs.undoInactiveSelections',
       () => {
-         const docUri = vscode.window.activeTextEditor.document.uri.toString()
-         const editorData = mainData[docUri]
+         const activeDocUri = vscode.window.activeTextEditor.document.uri.toString()
+         const activeEditorData = mainData[activeDocUri]
 
-         if (!editorData) {
+         if (!activeEditorData || activeEditorData.actionIndex === -1) {
             return
          }
 
-         if (editorData.actionIndex === -1) {
-            return
-         }
-
-         const action = editorData.actions[editorData.actionIndex]
+         const action = activeEditorData.actions[activeEditorData.actionIndex]
 
          switch (action.type) {
             case 'inactiveSelectionsPlaced':
-               editorData.inactiveSelections.splice(
-                  editorData.inactiveSelections.length - action.elementsCountToRemove
+               activeEditorData.inactiveSelections.splice(
+                  activeEditorData.inactiveSelections.length - action.elementsCountToRemove
                )
 
                for (const editor of vscode.window.visibleTextEditors) {
-                  if (editor.document.uri.toString() === docUri) {
-                     setMyDecorations(editor, editorData.inactiveSelections)
+                  if (editor.document.uri.toString() === activeDocUri) {
+                     setMyDecorations(editor, activeEditorData.inactiveSelections)
                   }
                }
 
-               if (editorData.inactiveSelections.length === 0) {
+               if (activeEditorData.inactiveSelections.length === 0) {
                   vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
                }
 
-               editorData.actionIndex -= 1
+               activeEditorData.actionIndex--
 
                break
 
@@ -345,11 +327,7 @@ const activate = (context) => {
          const docUri = vscode.window.activeTextEditor.document.uri.toString()
          const editorData = mainData[docUri]
 
-         if (!editorData) {
-            return
-         }
-
-         if (editorData.actionIndex + 1 === editorData.actions.length) {
+         if (!editorData || editorData.actionIndex + 1 === editorData.actions.length) {
             return
          }
 
@@ -367,7 +345,7 @@ const activate = (context) => {
 
                vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
 
-               editorData.actionIndex += 1
+               editorData.actionIndex++
 
                break
 
