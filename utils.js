@@ -101,9 +101,7 @@ const MainDataObject = () => {
 }
 
 /**
- * @param {'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'} type
- * @param {vscode.Range[]} ranges
- * @param {number} elementsCountToRemove
+ * @return {{type: 'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'|undefined, ranges: vscode.Range[], elementsCountToRemove: number|undefined}}
  */
 const Action = () => {
    return {

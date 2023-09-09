@@ -85,8 +85,8 @@ const activate = (context) => {
          // eventEditorData.actions.push(action)
          // eventEditorData.actionIndex++
 
-         eventEditorData.inactiveSelections.length = 0
-         eventEditorData.actions.length = 0
+         eventEditorData.inactiveSelections = []
+         eventEditorData.actions = []
          eventEditorData.actionIndex = -1
 
          for (const editor of vscode.window.visibleTextEditors) {
@@ -145,7 +145,7 @@ const activate = (context) => {
          if (!mainData[activeDocUri]) {
             mainData[activeDocUri] = MainDataObject()
          }
-         let activeEditorData = mainData[activeDocUri]
+         const activeEditorData = mainData[activeDocUri]
 
          const action = Action()
 
@@ -209,9 +209,9 @@ const activate = (context) => {
             activeEditorData.inactiveSelections = currentInactiveSelections
          }
 
-         activeEditorData.actionIndex++
-         activeEditorData.actions.splice(activeEditorData.actionIndex)
+         activeEditorData.actions.splice(activeEditorData.actionIndex + 1)
          activeEditorData.actions.push(action)
+         activeEditorData.actionIndex++
 
          for (const editor of vscode.window.visibleTextEditors) {
             if (editor.document.uri.toString() === activeDocUri) {
@@ -230,6 +230,7 @@ const activate = (context) => {
    const activateSelections = vscode.commands.registerCommand('kcs.activateSelections', () => {
       const activeDocUri = vscode.window.activeTextEditor.document.uri.toString()
       const activeEditorData = mainData[activeDocUri]
+      const action = Action()
 
       if (!activeEditorData || !activeEditorData.inactiveSelections.length) {
          return
@@ -246,7 +247,14 @@ const activate = (context) => {
          }
       }
 
-      activeEditorData.inactiveSelections.length = 0
+      action.type = 'inactiveSelectionsRemoved'
+      action.ranges = activeEditorData.inactiveSelections
+      action.elementsCountToRemove = activeEditorData.inactiveSelections.length
+      activeEditorData.actions.splice(activeEditorData.actionIndex + 1)
+      activeEditorData.actions.push(action)
+      activeEditorData.actionIndex++
+
+      activeEditorData.inactiveSelections = []
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
    })
