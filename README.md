@@ -4,9 +4,13 @@
 
 ![Create cursors and selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWcxcm9vZGdpcmVydzhjNnVlcHp2MmhsdmxkNzRndzAwcHU2NnY1YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nhmHtytEWzdUOVB68s/giphy.gif)
 
+<br>
+
 ### And then activate them
 
 ![And then activate them](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZiZHJ2aHR0dnFkb2h0bnNvamg5andmdXZpNHdzOGNjc3R2dWxkeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tFsUvTNgfTILb8IooB/giphy.gif)
+
+<br>
 
 ### Everything is done with two commands
 
@@ -16,6 +20,7 @@
 
 -  By default they are mapped to `PageDown` and `PageUp` respectively. If you need help in remapping them, check below.
 
+<br>
 <br>
 <br>
 
@@ -44,8 +49,6 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 <br>
 
 ### Other features
-
-These features and tips are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
 
 <br>
 
