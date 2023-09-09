@@ -1,14 +1,7 @@
 const vscode = require('vscode')
-const { getUpdatedRanges } = require('vscode-position-tracking')
 
-const {
-   outputChannel,
-   createDecorations,
-   setMyDecorations,
-   unsetMyDecorations
-} = require('./utils')
+const { createDecorations, setMyDecorations, unsetMyDecorations } = require('./utils')
 const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
-// const { getUpdatedRanges } = require('./positionTracking')
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -65,58 +58,50 @@ const activate = (context) => {
 
    vscode.workspace.onDidChangeTextDocument(
       (event) => {
-         const config = vscode.workspace.getConfiguration('kcs')
-         const selectionsReactToDocumentEdits = config.get('selectionsReactToDocumentEdits')
+         const key = event.document.uri.toString()
 
-         const docUriKey = event.document.uri.toString()
+         if (inactiveSelections[key]) {
+            delete inactiveSelections[key]
+            delete hiddenSelections[key]
 
-         if (!selectionsReactToDocumentEdits) {
-            if (inactiveSelections[docUriKey]) {
-               delete inactiveSelections[docUriKey]
-               delete hiddenSelections[docUriKey]
-
-               vscode.window.visibleTextEditors.forEach((editor) => {
-                  if (editor.document.uri.toString() === docUriKey) {
-                     unsetMyDecorations(editor, {
-                        cursorDecoration,
-                        selectionDecoration,
-                        eolSelectionDecoration
-                     })
-                  }
-               })
-
-               vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-            }
-         } else {
-            if (hiddenSelections[docUriKey]) {
-               delete inactiveSelections[docUriKey]
-               delete hiddenSelections[docUriKey]
-            } else if (hiddenSelections[docUriKey] === false) {
-               inactiveSelections[docUriKey] = getUpdatedRanges(
-                  inactiveSelections[docUriKey],
-                  event.contentChanges,
-                  {
-                     outputChannel
-                  }
-               )
-
-               vscode.window.visibleTextEditors.forEach((editor) => {
-                  if (editor.document.uri.toString() === docUriKey) {
-                     setMyDecorations(editor, inactiveSelections[docUriKey], {
-                        cursorDecoration,
-                        selectionDecoration,
-                        eolSelectionDecoration
-                     })
-                  }
-               })
-
-               if (!inactiveSelections[docUriKey].length) {
-                  delete inactiveSelections[docUriKey]
-                  delete hiddenSelections[docUriKey]
-
-                  vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            vscode.window.visibleTextEditors.forEach((editor) => {
+               if (editor.document.uri.toString() === key) {
+                  unsetMyDecorations(editor, {
+                     cursorDecoration,
+                     selectionDecoration,
+                     eolSelectionDecoration
+                  })
                }
-            }
+            })
+
+            vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+         }
+      },
+      undefined,
+      disposables
+   )
+
+   vscode.window.onDidChangeTextEditorSelection(
+      (event) => {
+         const docUriKey = event.textEditor.document.uri.toString()
+
+         if (
+            event.selections.length === 1 &&
+            event.selections[0].start.isEqual(event.selections[0].end) &&
+            hiddenSelections[docUriKey]
+         ) {
+            vscode.window.visibleTextEditors.forEach((editor) => {
+               if (editor.document.uri.toString() === docUriKey) {
+                  setMyDecorations(editor, inactiveSelections[docUriKey], {
+                     cursorDecoration,
+                     selectionDecoration,
+                     eolSelectionDecoration
+                  })
+               }
+            })
+
+            hiddenSelections[docUriKey] = false
+            vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
          }
       },
       undefined,
@@ -272,7 +257,6 @@ const activate = (context) => {
          }
       })
 
-      // Can be disabled for tracking testing purposes
       hiddenSelections[docUriKey] = true
 
       vscode.window.visibleTextEditors.forEach((editor) => {
@@ -286,7 +270,11 @@ const activate = (context) => {
       })
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
-      // Can be disabled for tracking testing purposes - end
+
+      if (selections.length === 1 && selections[0].start.isEqual(selections[0].end)) {
+         delete inactiveSelections[docUriKey]
+         delete hiddenSelections[docUriKey]
+      }
    })
 
    const removeInactiveSelections = vscode.commands.registerCommand(
@@ -308,8 +296,9 @@ const activate = (context) => {
                })
             }
          })
+         delete inactiveSelections[docUriKey]
+         delete hiddenSelections[docUriKey]
 
-         hiddenSelections[docUriKey] = true
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
       }
    )
@@ -321,39 +310,11 @@ const activate = (context) => {
       }
    )
 
-   const placeLastInactiveSelections = vscode.commands.registerCommand(
-      'kcs.placeLastInactiveSelections',
-      () => {
-         const editor = vscode.window.activeTextEditor
-         if (!editor) {
-            return
-         }
-
-         const docUriKey = editor.document.uri.toString()
-
-         if (hiddenSelections[docUriKey]) {
-            vscode.window.visibleTextEditors.forEach((editor) => {
-               if (editor.document.uri.toString() === docUriKey) {
-                  setMyDecorations(editor, inactiveSelections[docUriKey], {
-                     cursorDecoration,
-                     selectionDecoration,
-                     eolSelectionDecoration
-                  })
-               }
-            })
-
-            hiddenSelections[docUriKey] = false
-            vscode.commands.executeCommand('setContext', 'inactiveSelections', true)
-         }
-      }
-   )
-
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
       removeInactiveSelections,
       showReleaseNotesDisposable,
-      placeLastInactiveSelections,
       cursorDecoration,
       selectionDecoration,
       eolSelectionDecoration,

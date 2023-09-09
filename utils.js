@@ -1,7 +1,5 @@
 const vscode = require('vscode')
 
-const outputChannel = vscode.window.createOutputChannel('KCS')
-
 const createDecorations = (fontSize) => {
    const cursorDecorationBorder = 0.073333 * fontSize + 'px'
    const cursorDecorationMargin = -0.073333 * fontSize * 2 + 'px'
@@ -79,9 +77,4 @@ const unsetMyDecorations = (
    editor.setDecorations(eolSelectionDecoration, [])
 }
 
-module.exports = {
-   outputChannel,
-   createDecorations,
-   setMyDecorations,
-   unsetMyDecorations
-}
+module.exports = { createDecorations, setMyDecorations, unsetMyDecorations }

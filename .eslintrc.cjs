@@ -12,7 +12,6 @@ module.exports = {
       indent: ['error', 3],
       // quotes: ['error', 'single', { 'allowTemplateLiterals': true }],
       semi: ['error', 'never'],
-      'no-extra-semi': 'off',
       'no-unused-vars': ['warn', { vars: 'all' }],
       'no-empty': 'warn',
       'no-undef': 'error'
