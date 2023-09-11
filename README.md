@@ -1,7 +1,5 @@
 # In a nutshell
 
-<br>
-
 ### Create cursors and selections
 
 ![Create cursors and selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWcxcm9vZGdpcmVydzhjNnVlcHp2MmhsdmxkNzRndzAwcHU2NnY1YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nhmHtytEWzdUOVB68s/giphy.gif)
@@ -16,20 +14,17 @@
 
 ### Everything is done with two commands
 
--  Create inactive cursors and selections with `KCS: Place Inactive Selection` command.
+-  Create inactive cursors and selections with `Place Inactive Selection` command.
 
--  Activate the cursors and selections with `KCS: Activate Selections` command.
+-  Activate the cursors and selections with `Activate Selections` command.
 
 -  By default they are mapped to `PageDown` and `PageUp` respectively. If you need help in remapping them, check below.
 
 <br>
 <br>
 <br>
-<br>
 
 # Read more
-
-<br>
 
 ### Feedback
 
@@ -43,7 +38,7 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 2. Search for and select `Preferences: Open Keyboard Shortcuts`.
 
-3. Once the Shortcuts tab is open, search for the desired command, in this case `KCS: Place Inactive Selection` or `KCS: Activate Selections`, double click on it and press the new key combination.
+3. Once the Shortcuts tab is open, search for the desired command, in this case `Place Inactive Selection` or `Activate Selections`, double click on it and press the new key combination.
 
 <br>
 
@@ -54,8 +49,6 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 <br>
 
 ### Other features
-
-These features are usually intuitive and discoverable while you are using the extension, but I'm listing them here to be documented.
 
 <br>
 
@@ -75,11 +68,9 @@ These features are usually intuitive and discoverable while you are using the ex
 
 <br>
 
--  Place again the last inactive selections using `KCS: Place Last Inactive Selections` command.
+-  If you discard the active selections, the inactive selections will reappear. This is because maybe you wanted to modify something about them, and this feature allows you to do that:
 
-   The last inactive selections refers to the last group of selections that disappeared by either being discarded or activated.
-
-   The default key combination is `alt + shift + z`.
+   ![Inactive selections reappear](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Zwc2tsb2RwczZobHNkamMwajMyZXU0dnA4ZHlsY3BubXNkNzFpaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XTo0ZNyw3jCEsN5gdJ/giphy.gif)
 
 <br>
 

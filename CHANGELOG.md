@@ -1,3 +1,7 @@
+### 1.1.3 (09 Sep 2023)
+
+-  Fixed issue: With VS Code 1.82 there appeared an issue that made the inactive cursors too thin.
+
 ### 1.1.2 (14 Aug 2023)
 
 -  Minor patch.
