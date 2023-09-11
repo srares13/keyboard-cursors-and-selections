@@ -20,16 +20,14 @@ const outputChannel = vscode.window.createOutputChannel('KCS')
  * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations }}
  */
 const createDecorations = (fontSize) => {
-   const cursorDecorationBorder = 0.073333 * fontSize + 'px'
-   const cursorDecorationMargin = -0.073333 * fontSize * 2 + 'px'
    const eolSelectionBorder = 0.3 * fontSize + 'px'
 
    const cursorDecoration = vscode.window.createTextEditorDecorationType({
       after: {
-         backgroundColor: 'hsl(338, 78%, 70%)',
-         border: `${cursorDecorationBorder} solid hsl(338, 78%, 70%)`,
          contentText: '',
-         margin: `0 ${cursorDecorationMargin} 0 0`
+         backgroundColor: 'hsl(338, 78%, 70%)',
+         border: `1.25px solid hsl(338, 78%, 70%)`,
+         margin: `0 -2.5px 0 0`
       }
    })
 
