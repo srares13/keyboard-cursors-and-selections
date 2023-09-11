@@ -51,16 +51,16 @@ const activate = (context) => {
                vscode.workspace.getConfiguration('editor').get('fontSize')
             ))
 
-            for (const editor of vscode.window.visibleTextEditors) {
-               const docUri = editor.document.uri.toString()
-               const editorData = mainData[docUri]
+            for (const visibleEditor of vscode.window.visibleTextEditors) {
+               const visibleDocUri = visibleEditor.document.uri.toString()
+               const visibleEditorData = mainData[visibleDocUri]
 
-               if (!editorData || !editorData.inactiveSelections.length) {
+               if (!visibleEditorData || !visibleEditorData.inactiveSelections.length) {
                   continue
                }
 
-               unsetMyPreviousDecorations(editor)
-               setMyDecorations(editor, editorData.inactiveSelections)
+               unsetMyPreviousDecorations(visibleEditor)
+               setMyDecorations(visibleEditor, visibleEditorData.inactiveSelections)
             }
          }
       },
@@ -77,21 +77,13 @@ const activate = (context) => {
             return
          }
 
-         // const action = Action(
-         //    'inactiveSelectionsRemoved',
-         //    eventEditorData.inactiveSelections,
-         //    eventEditorData.inactiveSelections.length
-         // )
-         // eventEditorData.actions.push(action)
-         // eventEditorData.actionIndex++
-
          eventEditorData.inactiveSelections = []
          eventEditorData.actions = []
          eventEditorData.actionIndex = -1
 
-         for (const editor of vscode.window.visibleTextEditors) {
-            if (editor.document.uri.toString() === eventDocUri) {
-               unsetMyDecorations(editor)
+         for (const visibleEditor of vscode.window.visibleTextEditors) {
+            if (visibleEditor.document.uri.toString() === eventDocUri) {
+               unsetMyDecorations(visibleEditor)
             }
          }
 
@@ -105,15 +97,15 @@ const activate = (context) => {
 
    vscode.window.onDidChangeVisibleTextEditors(
       (visibleEditors) => {
-         for (const editor of visibleEditors) {
-            const docUri = editor.document.uri.toString()
-            const editorData = mainData[docUri]
+         for (const visibleEditor of visibleEditors) {
+            const visibleDocUri = visibleEditor.document.uri.toString()
+            const visibleEditorData = mainData[visibleDocUri]
 
-            if (!editorData || !editorData.inactiveSelections.length) {
+            if (!visibleEditorData || !visibleEditorData.inactiveSelections.length) {
                continue
             }
 
-            setMyDecorations(editor, editorData.inactiveSelections)
+            setMyDecorations(visibleEditor, visibleEditorData.inactiveSelections)
          }
       },
       undefined,
