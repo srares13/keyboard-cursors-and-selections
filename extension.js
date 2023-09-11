@@ -31,7 +31,7 @@ const activate = (context) => {
    /** @type {Object<string, MainDataObject>} */
    const mainData = {}
 
-   let { setMyDecorations, unsetMyDecorations } = createDecorations(
+   let { setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
    )
 
@@ -45,9 +45,10 @@ const activate = (context) => {
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
          if (event.affectsConfiguration('editor.fontSize')) {
-            const unsetMyPreviousDecorations = unsetMyDecorations
+            const previousUnsetMyDecorations = unsetMyDecorations
+            const previousDisposeDecorations = disposeDecorations
 
-            ;({ setMyDecorations, unsetMyDecorations } = createDecorations(
+            ;({ setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
                vscode.workspace.getConfiguration('editor').get('fontSize')
             ))
 
@@ -59,9 +60,11 @@ const activate = (context) => {
                   continue
                }
 
-               unsetMyPreviousDecorations(visibleEditor)
+               previousUnsetMyDecorations(visibleEditor)
                setMyDecorations(visibleEditor, visibleEditorData.inactiveSelections)
             }
+
+            previousDisposeDecorations()
          }
       },
       undefined,
@@ -398,9 +401,6 @@ const activate = (context) => {
       showReleaseNotesDisposable,
       undoInactiveSelections,
       redoInactiveSelections,
-      cursorDecoration,
-      selectionDecoration,
-      eolSelectionDecoration,
       ...disposables
    )
 }

@@ -17,7 +17,7 @@ const outputChannel = vscode.window.createOutputChannel('KCS')
 
 /**
  * @param {number} fontSize
- * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations }}
+ * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations, disposeDecorations: CallableFunction }}
  */
 const createDecorations = (fontSize) => {
    const eolSelectionBorder = 0.3 * fontSize + 'px'
@@ -84,7 +84,13 @@ const createDecorations = (fontSize) => {
       editor.setDecorations(eolSelectionDecoration, [])
    }
 
-   return { setMyDecorations, unsetMyDecorations }
+   const disposeDecorations = () => {
+      cursorDecoration.dispose()
+      selectionDecoration.dispose()
+      eolSelectionDecoration.dispose()
+   }
+
+   return { setMyDecorations, unsetMyDecorations, disposeDecorations }
 }
 
 /**
