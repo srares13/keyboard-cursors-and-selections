@@ -10,13 +10,14 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			],
-			"outFiles": [
-				"${workspaceFolder}/bundle/extension.js"
-			],
-			"preLaunchTask": "bundle-extension",
-			"sourceMaps": true
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--disable-extensions"
+			]
+			// "outFiles": [
+			// 	"${workspaceFolder}/bundle/extension.js"
+			// ],
+			// "preLaunchTask": "bundle-extension",
+			// "sourceMaps": true
 		},
 		{
 			"name": "Extension Tests",

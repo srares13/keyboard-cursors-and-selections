@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
-   "version": "1.1.3",
+   "version": "1.2.0",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -23,7 +23,7 @@
       "custom"
    ],
    "activationEvents": [],
-   "main": "./bundle/extension.js",
+   "main": "extension.js",
    "contributes": {
       "commands": [
          {
@@ -43,8 +43,12 @@
             "title": "KCS: Show Release Notes"
          },
          {
-            "command": "kcs.placeLastInactiveSelections",
-            "title": "KCS: Place Last Inactive Selections"
+            "command": "kcs.undo",
+            "title": "KCS: Undo"
+         },
+         {
+            "command": "kcs.redo",
+            "title": "KCS: Redo"
          }
       ],
       "keybindings": [
@@ -64,12 +68,12 @@
             "when": "editorTextFocus && inactiveSelections && !findWidgetVisible && !suggestWidgetVisible && !suggestWidgetMultipleSuggestions && !renameInputVisible && !referenceSearchVisible && !inReferenceSearchEditor && !quickFixWidgetVisible && !parameterHintsVisible && !parameterHintsMultipleSignatures && !editorHasSelection && !editorHasMultipleSelections && !notificationCenterVisible && !notificationToastsVisible"
          },
          {
-            "command": "kcs.undoInactiveSelection",
+            "command": "kcs.undo",
             "key": "alt+shift+z",
             "when": "editorTextFocus"
          },
          {
-            "command": "kcs.redoInactiveSelection",
+            "command": "kcs.redo",
             "key": "alt+shift+y",
             "when": "editorTextFocus"
          }
