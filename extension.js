@@ -27,6 +27,10 @@ const { createDecorations, MainDataObject, Action } = require('./utils')
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
+   // to remove
+   const action = Action('')
+   // to remove - end
+
    // #region | Global Data
    /** @type {Object<string, MainDataObject>} */
    const mainData = {}

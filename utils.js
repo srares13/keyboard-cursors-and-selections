@@ -105,13 +105,35 @@ const MainDataObject = () => {
 }
 
 /**
- * @return {{type: 'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'|undefined, ranges: vscode.Range[], elementsCountToRemove: number|undefined}}
+ * @typedef {Object} inactiveSelectionsPlacedAction
+ * @property {'inactiveSelectionsPlaced'} type
+ * @property {vscode.Range[]} ranges
+ * @property {number|undefined} elementsCountToRemove
  */
-const Action = () => {
-   return {
-      type: undefined,
-      ranges: [],
-      elementsCountToRemove: undefined
+/**
+ * @typedef {Object} inactiveSelectionsRemovedAction
+ * @property {'inactiveSelectionsRemoved'} type
+ * @property {{indexes: number[], ranges: vscode.Range[]}} rangesAndIndexes
+ * @property {number[]} indexesToRemove
+ */
+/**
+ * @template T
+ * @param {T} type
+ * @return {T extends 'inactiveSelectionsPlaced' ? inactiveSelectionsPlacedAction : inactiveSelectionsRemovedAction}
+ */
+const Action = (type) => {
+   if (type === 'inactiveSelectionsPlaced') {
+      return {
+         type: 'inactiveSelectionsPlaced',
+         ranges: [],
+         elementsCountToRemove: undefined
+      }
+   } else {
+      return {
+         type: 'inactiveSelectionsRemoved',
+         rangesAndIndexes: [],
+         indexesToRemove: []
+      }
    }
 }
 
