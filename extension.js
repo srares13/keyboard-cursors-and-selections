@@ -28,7 +28,8 @@ const { createDecorations, MainDataObject, Action } = require('./utils')
  */
 const activate = (context) => {
    // to remove
-   const action = Action('')
+   // const action = Action('inactiveSelectionsRemoved')
+   // action.
    // to remove - end
 
    // #region | Global Data

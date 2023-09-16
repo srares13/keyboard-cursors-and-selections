@@ -116,6 +116,7 @@ const MainDataObject = () => {
  * @property {{indexes: number[], ranges: vscode.Range[]}} rangesAndIndexes
  * @property {number[]} indexesToRemove
  */
+
 /**
  * @template T
  * @param {T} type
