@@ -2,7 +2,7 @@ const esbuild = require('esbuild')
 
 esbuild
    .build({
-      entryPoints: ['extension.js'],
+      entryPoints: ['extension.ts'],
       bundle: true,
       platform: 'node',
       target: ['node14'],
@@ -10,7 +10,8 @@ esbuild
       external: ['vscode'],
       format: 'cjs',
       loader: {
-         '.md': 'text'
+         '.md': 'text',
+         '.ts': 'ts'
       },
       sourcemap: true
    })

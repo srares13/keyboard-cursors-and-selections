@@ -12,12 +12,12 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--disable-extensions"
-			]
-			// "outFiles": [
-			// 	"${workspaceFolder}/bundle/extension.js"
-			// ],
-			// "preLaunchTask": "bundle-extension",
-			// "sourceMaps": true
+			],
+			"outFiles": [
+				"${workspaceFolder}/bundle/extension.js"
+			], // to know where the debugger would find the file that it needs to run
+			"preLaunchTask": "bundle-extension",
+			"sourceMaps": true
 		},
 		{
 			"name": "Extension Tests",

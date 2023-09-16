@@ -23,7 +23,7 @@
       "custom"
    ],
    "activationEvents": [],
-   "main": "extension.js",
+   "main": "bundle/extension.js",
    "contributes": {
       "commands": [
          {
@@ -86,11 +86,13 @@
       "bundle": "node ./esbuild.js"
    },
    "devDependencies": {
+      "@types/node": "^20.6.2",
       "esbuild": "~0.18.17",
       "eslint": "~8.48.0",
       "eslint-config-prettier": "~9.0.0",
       "eslint-plugin-prettier": "~5.0.0",
-      "prettier": "~3.0.3"
+      "prettier": "~3.0.3",
+      "typescript": "^5.2.2"
    },
    "dependencies": {
       "semver": "~7.5.4",
