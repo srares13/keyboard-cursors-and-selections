@@ -1,3 +1,4 @@
+// @ts-ignore
 const vscode = require('vscode')
 
 const outputChannel = vscode.window.createOutputChannel('KCS')
@@ -19,6 +20,7 @@ const outputChannel = vscode.window.createOutputChannel('KCS')
  * @param {number} fontSize
  * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations, disposeDecorations: CallableFunction }}
  */
+// @ts-ignore
 const createDecorations = (fontSize) => {
    const eolSelectionBorder = 0.3 * fontSize + 'px'
 
@@ -96,6 +98,7 @@ const createDecorations = (fontSize) => {
 /**
  * @return {{inactiveSelections: vscode.Range[], actions: Action[], actionIndex: number}}
  */
+// @ts-ignore
 const MainDataObject = () => {
    return {
       inactiveSelections: [],
@@ -122,6 +125,7 @@ const MainDataObject = () => {
  * @param {T} type
  * @return {T extends 'inactiveSelectionsPlaced' ? inactiveSelectionsPlacedAction : inactiveSelectionsRemovedAction}
  */
+// @ts-ignore
 const Action = (type) => {
    if (type === 'inactiveSelectionsPlaced') {
       return {

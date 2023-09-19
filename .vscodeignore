@@ -22,3 +22,5 @@ esbuild.js
 KCS_RELEASE_NOTES.md
 releaseNotes.js
 positionTracking.js
+types.ts
+tsconfig.json

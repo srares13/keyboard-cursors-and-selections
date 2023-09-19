@@ -1,8 +1,10 @@
 // #region | External imports
+// @ts-ignore
 const vscode = require('vscode')
 // #endregion
 
 // #region | Source code imports
+// @ts-ignore
 const { createDecorations, MainDataObject, Action } = require('./utils')
 // const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
 // #endregion
@@ -28,7 +30,7 @@ const { createDecorations, MainDataObject, Action } = require('./utils')
  */
 const activate = (context) => {
    // to remove
-   // const action = Action('inactiveSelectionsRemoved')
+   // const action = Action('inactiveSelectionsPlaced')
    // action.
    // to remove - end
 
@@ -149,7 +151,7 @@ const activate = (context) => {
          }
          const activeEditorData = mainData[activeDocUri]
 
-         const action = Action()
+         const action = Action('todo')
 
          let currentInactiveSelections = [...activeEditorData.inactiveSelections]
          const newInactiveSelections = []
@@ -250,7 +252,7 @@ const activate = (context) => {
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-      const action = Action()
+      const action = Action('todo')
       action.type = 'inactiveSelectionsRemoved'
       action.ranges = activeEditorData.inactiveSelections
       action.elementsCountToRemove = activeEditorData.inactiveSelections.length
@@ -279,7 +281,7 @@ const activate = (context) => {
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-         const action = Action()
+         const action = Action('todo')
          action.type = 'inactiveSelectionsRemoved'
          action.ranges = activeEditorData.inactiveSelections
          action.elementsCountToRemove = activeEditorData.inactiveSelections.length
