@@ -1,5 +1,5 @@
 // @ts-ignore
-const vscode = require('vscode')
+import vscode from 'vscode'
 
 type InactiveSelectionsPlacedAction = {
    type: 'inactiveSelectionsPlaced'

@@ -1,4 +1,5 @@
 {
+   "type": "module",
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
@@ -86,7 +87,8 @@
       "bundle": "node ./esbuild.js"
    },
    "devDependencies": {
-      "@types/node": "^20.6.2",
+      "@types/node": "^20.6.3",
+      "@types/vscode": "^1.82.0",
       "esbuild": "~0.18.17",
       "eslint": "~8.48.0",
       "eslint-config-prettier": "~9.0.0",

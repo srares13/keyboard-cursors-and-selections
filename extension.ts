@@ -1,12 +1,10 @@
 // #region | External imports
-// @ts-ignore
-const vscode = require('vscode')
+import * as vscode from 'vscode'
 // #endregion
 
 // #region | Source code imports
-// @ts-ignore
-const { createDecorations, MainDataObject, Action } = require('./utils')
-// const { notifyAboutReleaseNotes, virtualDocUri } = require('./releaseNotes')
+import { createDecorations, MainDataObject, Action } from './utils'
+import { notifyAboutReleaseNotes, virtualDocUri } from './releaseNotes'
 // #endregion
 
 // #region | Types
@@ -410,7 +408,4 @@ const activate = (context) => {
 
 const deactivate = () => {}
 
-module.exports = {
-   activate,
-   deactivate
-}
+export { activate, deactivate }

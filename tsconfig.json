@@ -22,9 +22,9 @@
 		// "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
 		// "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
 		/* Modules */
-		"module": "commonjs", /* Specify what module code is generated. */
+		"module": "ESNext", // It determines the module syntax of the emitted output (if you were emitting). It establishes what module syntax is acceptable in the source files.
 		// "rootDir": "./",                                  /* Specify the root folder within your source files. */
-		"moduleResolution": "node", /* Specify how TypeScript looks up a file from a given module specifier. */
+		"moduleResolution": "node", // This setting dictates how TypeScript will resolve module imports. The node option is appropriate for both CommonJS and ES modules, as it uses Node.js-style module resolution (i.e., looking in node_modules, considering package.json fields, etc.).
 		// "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
 		// "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
