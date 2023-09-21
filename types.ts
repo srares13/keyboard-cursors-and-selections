@@ -1,5 +1,4 @@
-// @ts-ignore
-import vscode from 'vscode'
+import * as vscode from 'vscode'
 
 type InactiveSelectionsPlacedAction = {
    type: 'inactiveSelectionsPlaced'
