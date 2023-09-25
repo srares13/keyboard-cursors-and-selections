@@ -1,9 +1,11 @@
-export const activate = () => {
-	...
-}
+const mainFunction = () => {
+   let myVar
 
-export const deactivate = () => {
-	...
-}
+   if (isTruthy) {
+      myVar = 'ok'
+   } else {
+      myVar = 'not ok'
+   }
 
-export default {activate, deactivate}
+   // and then later on use myVar here for something
+}

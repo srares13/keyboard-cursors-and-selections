@@ -1,7 +1,5 @@
 import * as vscode from 'vscode'
-
-// import * as semver from 'semver'
-const semver = require('semver')
+import * as semver from 'semver'
 
 const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
 const { outputChannel } = require('./utils')

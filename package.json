@@ -1,5 +1,4 @@
 {
-   "type": "module",
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",

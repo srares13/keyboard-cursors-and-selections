@@ -1,18 +1,25 @@
 import * as vscode from 'vscode'
 
-type InactiveSelectionsPlacedAction = {
+type InactiveSelectionsPlaced = {
    type: 'inactiveSelectionsPlaced'
    ranges: vscode.Range[]
-   elementsCountToRemove?: number
+   elementsCountToRemove: number
 }
 
-type InactiveSelectionsRemovedAction = {
+type InactiveSelectionsRemoved = {
    type: 'inactiveSelectionsRemoved'
    rangesAndIndexes: {
-      indexes: number[]
-      ranges: vscode.Range[]
-   }
-   indexesToRemove: number[]
+      index: number
+      range: vscode.Range
+   }[]
 }
 
-type ActionType = 'inactiveSelectionsPlaced' | 'inactiveSelectionsRemoved'
+type Action = InactiveSelectionsPlaced | InactiveSelectionsRemoved
+
+type MainDataObjectType = {
+   inactiveSelections: vscode.Range[]
+   actions: Array<Action>
+   actionIndex: number | undefined
+}
+
+export { InactiveSelectionsPlaced, InactiveSelectionsRemoved, Action, MainDataObjectType }

@@ -96,6 +96,9 @@
 		// "allowUnreachableCode": true,                     /* Disable error reporting for unreachable code. */
 		/* Completeness */
 		// "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-		"skipLibCheck": true /* Skip type checking all .d.ts files. */
+		// "skipLibCheck": true /* Skip type checking all .d.ts files. */
 	}
+	// "exclude": [
+	// 	"./extension.ts"
+	// ] // Specifies which files or directories TypeScript should exclude from the compilation process. When you run the TypeScript compiler (tsc), it will skip over the files and directories listed in the exclude array.
 }

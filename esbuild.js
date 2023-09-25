@@ -1,4 +1,4 @@
-import esbuild from 'esbuild'
+const esbuild = require('esbuild')
 
 esbuild
    .build({
@@ -8,10 +8,10 @@ esbuild
       // and modules (like fs or path) are left intact and not polyfilled or shimmed.
       // This is the correct setting for VS Code extensions since
       // they run in a Node.js context within the VS Code application.
-      target: ['node14'],
+      target: ['node16'],
       outfile: 'bundle/extension.js',
       external: ['vscode'],
-      format: 'cjs', // It will output the code in the CommonJS module format.
+      format: 'cjs', // Specifies what module syntax should be used for the transpiled code: CommonJS or ES.
       loader: {
          '.md': 'text',
          '.ts': 'ts'

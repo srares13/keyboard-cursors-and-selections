@@ -3,38 +3,22 @@ import * as vscode from 'vscode'
 // #endregion
 
 // #region | Source code imports
-import { createDecorations, MainDataObject, Action } from './utils'
-import { notifyAboutReleaseNotes, virtualDocUri } from './releaseNotes'
-// #endregion
-
-// #region | Types
-/**
- * @typedef {Object} Action
- * @property {'inactiveSelectionsPlaced'|'inactiveSelectionsRemoved'} type
- * @property {vscode.Range[]} ranges
- * @property {number} elementsCountToRemove
- */
-
-/**
- * @typedef {Object} MainDataObject
- * @property {vscode.Range[]} inactiveSelections
- * @property {Action[]} actions
- * @property {number|undefined} actionIndex
- */
+import { createDecorations, MainDataObject } from './utils'
+import {
+   InactiveSelectionsPlaced,
+   InactiveSelectionsRemoved,
+   Action,
+   MainDataObjectType
+} from './types'
+// import { notifyAboutReleaseNotes, virtualDocUri } from './releaseNotes'
 // #endregion
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
-   // to remove
-   // const action = Action('inactiveSelectionsPlaced')
-   // action.
-   // to remove - end
-
    // #region | Global Data
-   /** @type {Object<string, MainDataObject>} */
-   const mainData = {}
+   const mainData: { [key: string]: MainDataObjectType } = {}
 
    let { setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
@@ -149,7 +133,8 @@ const activate = (context) => {
          }
          const activeEditorData = mainData[activeDocUri]
 
-         const action = Action('todo')
+         // let action: InactiveSelectionsPlaced | InactiveSelectionsRemoved
+         let action
 
          let currentInactiveSelections = [...activeEditorData.inactiveSelections]
          const newInactiveSelections = []
@@ -188,25 +173,29 @@ const activate = (context) => {
                inactiveSelection1.start.compareTo(inactiveSelection2.start)
             )
 
-            action.type = 'inactiveSelectionsPlaced'
-            action.ranges = newInactiveSelections
-            action.elementsCountToRemove = newInactiveSelections.length
-
             currentInactiveSelections.push(...newInactiveSelections)
             activeEditorData.inactiveSelections = currentInactiveSelections
+
+            const inactiveSelectionsPlacedAction = {} as InactiveSelectionsPlaced
+            inactiveSelectionsPlacedAction.type = 'inactiveSelectionsPlaced'
+            inactiveSelectionsPlacedAction.ranges = newInactiveSelections
+            inactiveSelectionsPlacedAction.elementsCountToRemove = newInactiveSelections.length
+            action = inactiveSelectionsPlacedAction
          } else {
-            action.type = 'inactiveSelectionsRemoved'
+            const inactiveSelectionsRemovedAction = {} as InactiveSelectionsRemoved
+            inactiveSelectionsRemovedAction.type = 'inactiveSelectionsRemoved'
 
             currentInactiveSelections = currentInactiveSelections.filter((inactiveSelection, i) => {
                if (inactiveSelection) {
                   return true
                } else {
-                  action.ranges.push(activeEditorData.inactiveSelections[i])
+                  inactiveSelectionsRemovedAction.rangesAndIndexes.push({
+                     index: i,
+                     range: inactiveSelection
+                  })
                   return false
                }
             })
-
-            action.elementsCountToRemove = action.ranges.length
 
             activeEditorData.inactiveSelections = currentInactiveSelections
          }
@@ -250,10 +239,12 @@ const activate = (context) => {
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-      const action = Action('todo')
+      const action = {} as InactiveSelectionsRemoved
       action.type = 'inactiveSelectionsRemoved'
-      action.ranges = activeEditorData.inactiveSelections
-      action.elementsCountToRemove = activeEditorData.inactiveSelections.length
+      for (let i = 0; i < activeEditorData.inactiveSelections.length; i++) {
+         action.rangesAndIndexes.push({ index: i, range: activeEditorData.inactiveSelections[i] })
+      }
+
       activeEditorData.actions.splice(activeEditorData.actionIndex + 1)
       activeEditorData.actions.push(action)
       activeEditorData.actionIndex++
@@ -279,10 +270,15 @@ const activate = (context) => {
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-         const action = Action('todo')
+         const action = {} as InactiveSelectionsRemoved
          action.type = 'inactiveSelectionsRemoved'
-         action.ranges = activeEditorData.inactiveSelections
-         action.elementsCountToRemove = activeEditorData.inactiveSelections.length
+         for (let i = 0; i < activeEditorData.inactiveSelections.length; i++) {
+            action.rangesAndIndexes.push({
+               index: i,
+               range: activeEditorData.inactiveSelections[i]
+            })
+         }
+
          activeEditorData.actions.splice(activeEditorData.actionIndex + 1)
          activeEditorData.actions.push(action)
          activeEditorData.actionIndex++
@@ -328,8 +324,15 @@ const activate = (context) => {
 
             break
 
+         // the undo of this means placing back
          case 'inactiveSelectionsRemoved':
-            activeEditorData.inactiveSelections.push(...action.ranges)
+            for (const rangeAndIndex of action.rangesAndIndexes) {
+               activeEditorData.inactiveSelections.splice(
+                  rangeAndIndex.index,
+                  0,
+                  rangeAndIndex.range
+               )
+            }
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                if (visibleEditor.document.uri.toString() === activeDocUri) {
@@ -375,9 +378,11 @@ const activate = (context) => {
             break
 
          case 'inactiveSelectionsRemoved':
-            activeEditorData.inactiveSelections.splice(
-               activeEditorData.inactiveSelections.length - action.elementsCountToRemove
-            )
+            for (const rangeAndIndex of action.rangesAndIndexes) {
+               activeEditorData.inactiveSelections[rangeAndIndex.index] = null
+            }
+
+            activeEditorData.inactiveSelections.filter((inactiveSelection) => inactiveSelection)
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                if (visibleEditor.document.uri.toString() === activeDocUri) {

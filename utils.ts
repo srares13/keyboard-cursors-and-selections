@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import { InactiveSelectionsPlaced, InactiveSelectionsRemoved } from './types'
 
 const outputChannel = vscode.window.createOutputChannel('KCS')
 
@@ -104,38 +105,24 @@ const MainDataObject = () => {
    }
 }
 
-/**
- * @typedef {Object} inactiveSelectionsPlacedAction
- * @property {'inactiveSelectionsPlaced'} type
- * @property {vscode.Range[]} ranges
- * @property {number|undefined} elementsCountToRemove
- */
-/**
- * @typedef {Object} inactiveSelectionsRemovedAction
- * @property {'inactiveSelectionsRemoved'} type
- * @property {{indexes: number[], ranges: vscode.Range[]}} rangesAndIndexes
- * @property {number[]} indexesToRemove
- */
+// function Action(type: 'inactiveSelectionsPlaced'): InactiveSelectionsPlaced
+// function Action(type: 'inactiveSelectionsRemoved'): InactiveSelectionsRemoved
+// function Action(
+//    type: 'inactiveSelectionsPlaced' | 'inactiveSelectionsRemoved'
+// ): InactiveSelectionsPlaced | InactiveSelectionsRemoved {
+//    if (type === 'inactiveSelectionsPlaced') {
+//       return {
+//          type: 'inactiveSelectionsPlaced',
+//          ranges: [],
+//          elementsCountToRemove: undefined
+//       }
+//    } else {
+//       return {
+//          type: 'inactiveSelectionsRemoved',
+//          rangesAndIndexes: [],
+//          indexesToRemove: []
+//       }
+//    }
+// }
 
-/**
- * @template T
- * @param {T} type
- * @return {T extends 'inactiveSelectionsPlaced' ? inactiveSelectionsPlacedAction : inactiveSelectionsRemovedAction}
- */
-const Action = (type) => {
-   if (type === 'inactiveSelectionsPlaced') {
-      return {
-         type: 'inactiveSelectionsPlaced',
-         ranges: [],
-         elementsCountToRemove: undefined
-      }
-   } else {
-      return {
-         type: 'inactiveSelectionsRemoved',
-         rangesAndIndexes: [],
-         indexesToRemove: []
-      }
-   }
-}
-
-export { outputChannel, createDecorations, MainDataObject, Action }
+export { outputChannel, createDecorations, MainDataObject }
