@@ -6,18 +6,25 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Run Extension",
+			"name": "Run bundled",
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--disable-extensions"
+				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
 			"outFiles": [
 				"${workspaceFolder}/bundle/extension.js"
 			], // to know where the debugger would find the file that it needs to run
 			"preLaunchTask": "bundle-extension",
 			"sourceMaps": true
+		},
+		{
+			"name": "Run unbundled",
+			"type": "extensionHost",
+			"request": "launch",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}"
+			]
 		},
 		{
 			"name": "Extension Tests",

@@ -3,13 +3,14 @@ import * as vscode from 'vscode'
 // #endregion
 
 // #region | Source code imports
-import { createDecorations, MainDataObject } from './utils'
 import {
-   InactiveSelectionsPlaced,
-   InactiveSelectionsRemoved,
-   Action,
-   MainDataObjectType
-} from './types'
+   createDecorations,
+   MainDataObject,
+   InactiveSelectionsPlacedAction,
+   InactiveSelectionsRemovedAction,
+   Action
+} from './utils'
+
 // import { notifyAboutReleaseNotes, virtualDocUri } from './releaseNotes'
 // #endregion
 
@@ -18,7 +19,7 @@ import {
  */
 const activate = (context) => {
    // #region | Global Data
-   const mainData: { [key: string]: MainDataObjectType } = {}
+   const mainData: { [key: string]: MainDataObject } = {}
 
    let { setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
       vscode.workspace.getConfiguration('editor').get('fontSize')
@@ -129,7 +130,7 @@ const activate = (context) => {
          const activeDocUri = activeEditor.document.uri.toString()
 
          if (!mainData[activeDocUri]) {
-            mainData[activeDocUri] = MainDataObject()
+            mainData[activeDocUri] = new MainDataObject()
          }
          const activeEditorData = mainData[activeDocUri]
 
@@ -176,14 +177,12 @@ const activate = (context) => {
             currentInactiveSelections.push(...newInactiveSelections)
             activeEditorData.inactiveSelections = currentInactiveSelections
 
-            const inactiveSelectionsPlacedAction = {} as InactiveSelectionsPlaced
-            inactiveSelectionsPlacedAction.type = 'inactiveSelectionsPlaced'
+            const inactiveSelectionsPlacedAction = new InactiveSelectionsPlacedAction()
             inactiveSelectionsPlacedAction.ranges = newInactiveSelections
             inactiveSelectionsPlacedAction.elementsCountToRemove = newInactiveSelections.length
             action = inactiveSelectionsPlacedAction
          } else {
-            const inactiveSelectionsRemovedAction = {} as InactiveSelectionsRemoved
-            inactiveSelectionsRemovedAction.type = 'inactiveSelectionsRemoved'
+            const inactiveSelectionsRemovedAction = new InactiveSelectionsRemovedAction()
 
             currentInactiveSelections = currentInactiveSelections.filter((inactiveSelection, i) => {
                if (inactiveSelection) {
@@ -198,6 +197,8 @@ const activate = (context) => {
             })
 
             activeEditorData.inactiveSelections = currentInactiveSelections
+
+            action = inactiveSelectionsRemovedAction
          }
 
          activeEditorData.actions.splice(activeEditorData.actionIndex + 1)
@@ -239,8 +240,7 @@ const activate = (context) => {
 
       vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-      const action = {} as InactiveSelectionsRemoved
-      action.type = 'inactiveSelectionsRemoved'
+      const action = new InactiveSelectionsRemovedAction()
       for (let i = 0; i < activeEditorData.inactiveSelections.length; i++) {
          action.rangesAndIndexes.push({ index: i, range: activeEditorData.inactiveSelections[i] })
       }
@@ -270,8 +270,7 @@ const activate = (context) => {
 
          vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
 
-         const action = {} as InactiveSelectionsRemoved
-         action.type = 'inactiveSelectionsRemoved'
+         const action = new InactiveSelectionsRemovedAction()
          for (let i = 0; i < activeEditorData.inactiveSelections.length; i++) {
             action.rangesAndIndexes.push({
                index: i,

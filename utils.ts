@@ -1,5 +1,4 @@
 import * as vscode from 'vscode'
-import { InactiveSelectionsPlaced, InactiveSelectionsRemoved } from './types'
 
 const outputChannel = vscode.window.createOutputChannel('KCS')
 
@@ -94,35 +93,33 @@ const createDecorations = (fontSize) => {
    return { setMyDecorations, unsetMyDecorations, disposeDecorations }
 }
 
-/**
- * @return {{inactiveSelections: vscode.Range[], actions: Action[], actionIndex: number}}
- */
-const MainDataObject = () => {
-   return {
-      inactiveSelections: [],
-      actions: [],
-      actionIndex: -1
-   }
+class MainDataObject {
+   inactiveSelections: vscode.Range[] = []
+   actions: Array<InactiveSelectionsPlacedAction | InactiveSelectionsRemovedAction> = []
+   actionIndex: number = -1
 }
 
-// function Action(type: 'inactiveSelectionsPlaced'): InactiveSelectionsPlaced
-// function Action(type: 'inactiveSelectionsRemoved'): InactiveSelectionsRemoved
-// function Action(
-//    type: 'inactiveSelectionsPlaced' | 'inactiveSelectionsRemoved'
-// ): InactiveSelectionsPlaced | InactiveSelectionsRemoved {
-//    if (type === 'inactiveSelectionsPlaced') {
-//       return {
-//          type: 'inactiveSelectionsPlaced',
-//          ranges: [],
-//          elementsCountToRemove: undefined
-//       }
-//    } else {
-//       return {
-//          type: 'inactiveSelectionsRemoved',
-//          rangesAndIndexes: [],
-//          indexesToRemove: []
-//       }
-//    }
-// }
+class InactiveSelectionsPlacedAction {
+   readonly type = 'inactiveSelectionsPlaced'
+   ranges: vscode.Range[] = []
+   elementsCountToRemove: number = undefined
+}
 
-export { outputChannel, createDecorations, MainDataObject }
+class InactiveSelectionsRemovedAction {
+   readonly type = 'inactiveSelectionsRemoved'
+   rangesAndIndexes: Array<{
+      index: number
+      range: vscode.Range
+   }> = []
+}
+
+type Action = InactiveSelectionsPlacedAction | InactiveSelectionsRemovedAction
+
+export {
+   outputChannel,
+   createDecorations,
+   MainDataObject,
+   InactiveSelectionsPlacedAction,
+   InactiveSelectionsRemovedAction,
+   Action
+}
