@@ -185,12 +185,13 @@ const activate = (context) => {
             const inactiveSelectionsRemovedAction = new InactiveSelectionsRemovedAction()
 
             currentInactiveSelections = currentInactiveSelections.filter((inactiveSelection, i) => {
+               console.dir(inactiveSelection)
                if (inactiveSelection) {
                   return true
                } else {
                   inactiveSelectionsRemovedAction.rangesAndIndexes.push({
                      index: i,
-                     range: inactiveSelection
+                     range: activeEditorData.inactiveSelections[i]
                   })
                   return false
                }
@@ -325,6 +326,12 @@ const activate = (context) => {
 
          // the undo of this means placing back
          case 'inactiveSelectionsRemoved':
+            // console.log('before')
+            // console.dir(activeEditorData.inactiveSelections)
+            // console.log('range to be placed back')
+            // console.dir(action.rangesAndIndexes[0].index)
+            // console.dir(action.rangesAndIndexes[0].range)
+
             for (const rangeAndIndex of action.rangesAndIndexes) {
                activeEditorData.inactiveSelections.splice(
                   rangeAndIndex.index,
@@ -332,6 +339,9 @@ const activate = (context) => {
                   rangeAndIndex.range
                )
             }
+
+            // console.log('after')
+            // console.dir(activeEditorData.inactiveSelections)
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                if (visibleEditor.document.uri.toString() === activeDocUri) {
@@ -381,7 +391,9 @@ const activate = (context) => {
                activeEditorData.inactiveSelections[rangeAndIndex.index] = null
             }
 
-            activeEditorData.inactiveSelections.filter((inactiveSelection) => inactiveSelection)
+            activeEditorData.inactiveSelections = activeEditorData.inactiveSelections.filter(
+               (inactiveSelection) => inactiveSelection
+            )
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                if (visibleEditor.document.uri.toString() === activeDocUri) {
