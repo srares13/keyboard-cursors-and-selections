@@ -16,7 +16,10 @@
 				"${workspaceFolder}/bundle/extension.js"
 			], // to know where the debugger would find the file that it needs to run
 			"preLaunchTask": "bundle-extension",
-			"sourceMaps": true
+			"sourceMaps": true,
+			"env": {
+				"WORKSPACE_PATH": "${workspaceFolder}"
+			}
 		},
 		{
 			"name": "Run unbundled",

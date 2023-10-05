@@ -1,4 +1,8 @@
+<br>
+
 **If it's your first install, you won't have to check Release Notes.**
+
+<br>
 
 ## 1.1.0 (14 Aug 2023)
 

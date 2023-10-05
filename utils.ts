@@ -113,13 +113,10 @@ class InactiveSelectionsRemovedAction {
    }> = []
 }
 
-type Action = InactiveSelectionsPlacedAction | InactiveSelectionsRemovedAction
-
 export {
    outputChannel,
    createDecorations,
    MainDataObject,
    InactiveSelectionsPlacedAction,
-   InactiveSelectionsRemovedAction,
-   Action
+   InactiveSelectionsRemovedAction
 }

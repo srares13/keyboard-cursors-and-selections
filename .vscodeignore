@@ -20,7 +20,6 @@ prettier.config.js
 extension.js
 utils.js
 esbuild.js
-KCS_RELEASE_NOTES.md
 releaseNotes.js
 positionTracking.js
 types.ts

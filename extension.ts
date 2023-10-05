@@ -2,22 +2,18 @@
 import * as vscode from 'vscode'
 // #endregion
 
-// #region | Source code imports
+// #region | Internal imports
 import {
    createDecorations,
    MainDataObject,
    InactiveSelectionsPlacedAction,
-   InactiveSelectionsRemovedAction,
-   Action
+   InactiveSelectionsRemovedAction
 } from './utils'
+import { handleReleaseNotes, showReleaseNotes } from './releaseNotes'
 
-// import { notifyAboutReleaseNotes, virtualDocUri } from './releaseNotes'
 // #endregion
 
-/**
- * @param {vscode.ExtensionContext} context
- */
-const activate = (context) => {
+const activate = (context: vscode.ExtensionContext) => {
    // #region | Global Data
    const mainData: { [key: string]: MainDataObject } = {}
 
@@ -30,7 +26,7 @@ const activate = (context) => {
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
    // #endregion
 
-   // notifyAboutReleaseNotes(context)
+   handleReleaseNotes(context)
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
@@ -87,8 +83,6 @@ const activate = (context) => {
       undefined,
       disposables
    )
-
-   // vscode.workspace.onWillSaveTextDocument((event) => {}, undefined, disposables)
 
    vscode.window.onDidChangeVisibleTextEditors(
       (visibleEditors) => {
@@ -185,7 +179,6 @@ const activate = (context) => {
             const inactiveSelectionsRemovedAction = new InactiveSelectionsRemovedAction()
 
             currentInactiveSelections = currentInactiveSelections.filter((inactiveSelection, i) => {
-               console.dir(inactiveSelection)
                if (inactiveSelection) {
                   return true
                } else {
@@ -290,7 +283,7 @@ const activate = (context) => {
    const showReleaseNotesDisposable = vscode.commands.registerCommand(
       'kcs.showReleaseNotes',
       () => {
-         // vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
+         showReleaseNotes(context)
       }
    )
 
@@ -326,12 +319,6 @@ const activate = (context) => {
 
          // the undo of this means placing back
          case 'inactiveSelectionsRemoved':
-            // console.log('before')
-            // console.dir(activeEditorData.inactiveSelections)
-            // console.log('range to be placed back')
-            // console.dir(action.rangesAndIndexes[0].index)
-            // console.dir(action.rangesAndIndexes[0].range)
-
             for (const rangeAndIndex of action.rangesAndIndexes) {
                activeEditorData.inactiveSelections.splice(
                   rangeAndIndex.index,
@@ -339,9 +326,6 @@ const activate = (context) => {
                   rangeAndIndex.range
                )
             }
-
-            // console.log('after')
-            // console.dir(activeEditorData.inactiveSelections)
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                if (visibleEditor.document.uri.toString() === activeDocUri) {

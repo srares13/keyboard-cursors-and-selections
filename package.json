@@ -87,6 +87,7 @@
    },
    "devDependencies": {
       "@types/node": "^20.6.3",
+      "@types/semver": "^7.5.3",
       "@types/vscode": "^1.82.0",
       "esbuild": "~0.18.17",
       "eslint": "~8.48.0",
@@ -96,6 +97,7 @@
       "typescript": "^5.2.2"
    },
    "dependencies": {
+      "marked": "^9.0.3",
       "semver": "~7.5.4",
       "vscode-position-tracking": "~0.1.0"
    }
