@@ -1,63 +1,3 @@
-// import * as vscode from 'vscode'
-// import * as semver from 'semver'
-
-// const releaseNotesContent = require('./KCS_RELEASE_NOTES.md')
-// const { outputChannel } = require('./utils')
-
-// const VERSIONS_FOR_RELEASE_NOTES = ['1.1.0', '1.1.1', '1.1.2']
-
-// const provider = {
-//    provideTextDocumentContent(uri) {
-//       return releaseNotesContent
-//    }
-// }
-// const scheme = 'releaseNotes'
-// vscode.workspace.registerTextDocumentContentProvider(scheme, provider)
-// const virtualDocUri = vscode.Uri.parse(`${scheme}:///KCS_RELEASE_NOTES.md`)
-
-// /**
-//  * @param {vscode.ExtensionContext} context
-//  */
-
-// const showNotification = () => {
-//    vscode.window
-//       .showInformationMessage(
-//          "KCS: New important changes! If it's your first install, you won't have to check Release Notes.",
-//          'Release Notes'
-//       )
-//       .then((selection) => {
-//          if (selection === 'Release Notes') {
-//             vscode.commands.executeCommand('markdown.showPreview', virtualDocUri)
-//          }
-//       })
-// }
-
-// const notifyAboutReleaseNotes = (context) => {
-//    const previousVersion = context.globalState.get('extensionVersion')
-//    const currentVersion = vscode.extensions.getExtension('srares13.kcs').packageJSON.version
-
-//    if (!previousVersion) {
-//       showNotification()
-
-//       context.globalState.update('extensionVersion', currentVersion)
-
-//       return
-//    }
-
-//    if (semver.diff(previousVersion, currentVersion)) {
-//       if (
-//          semver.lt(previousVersion, currentVersion) &&
-//          VERSIONS_FOR_RELEASE_NOTES.includes(currentVersion)
-//       ) {
-//          showNotification()
-//       }
-
-//       context.globalState.update('extensionVersion', currentVersion)
-//    }
-// }
-
-// export { notifyAboutReleaseNotes, virtualDocUri }
-
 // #region | External imports
 import * as vscode from 'vscode'
 import { promises as fs } from 'fs'
@@ -87,14 +27,14 @@ const showReleaseNotes = async (context: vscode.ExtensionContext) => {
 
       const htmlContent = await marked(data, { async: true })
 
-      const panel = vscode.window.createWebviewPanel('markdownPreview', 'Markdown Preview', {
+      const panel = vscode.window.createWebviewPanel('importantChanges', 'KCS Important Changes', {
          viewColumn: vscode.ViewColumn.Beside,
          preserveFocus: true
       })
 
       panel.webview.html = htmlContent
    } catch (error) {
-      vscode.window.showErrorMessage('There was an issue in showing KCS Release Notes.')
+      vscode.window.showErrorMessage('There was an issue in showing KCS Important Changes.')
       outputChannel.appendLine(error)
    }
 }
