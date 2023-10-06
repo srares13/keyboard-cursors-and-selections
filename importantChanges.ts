@@ -10,7 +10,7 @@ import * as semver from 'semver'
 import { outputChannel } from './utils'
 // #endregion
 
-const showReleaseNotes = async (context: vscode.ExtensionContext) => {
+const showImportantChanges = async (context: vscode.ExtensionContext) => {
    try {
       const workspacePath = process.env.WORKSPACE_PATH
       let filePath = undefined
@@ -39,7 +39,7 @@ const showReleaseNotes = async (context: vscode.ExtensionContext) => {
    }
 }
 
-const handleReleaseNotes = (context: vscode.ExtensionContext) => {
+const handleImportantChanges = (context: vscode.ExtensionContext) => {
    const previousVersion: string | undefined = context.globalState.get('extensionVersion')
    const currentVersion = vscode.extensions.getExtension('srares13.kcs').packageJSON.version
 
@@ -51,11 +51,11 @@ const handleReleaseNotes = (context: vscode.ExtensionContext) => {
 
    if (semver.diff(previousVersion, currentVersion)) {
       if (semver.lt(previousVersion, currentVersion)) {
-         showReleaseNotes(context)
+         showImportantChanges(context)
       }
 
       context.globalState.update('extensionVersion', currentVersion)
    }
 }
 
-export { showReleaseNotes, handleReleaseNotes }
+export { showImportantChanges, handleImportantChanges }

@@ -9,7 +9,7 @@ import {
    InactiveSelectionsPlacedAction,
    InactiveSelectionsRemovedAction
 } from './utils'
-import { handleReleaseNotes, showReleaseNotes } from './releaseNotes'
+import { handleImportantChanges, showImportantChanges } from './importantChanges'
 
 // #endregion
 
@@ -26,7 +26,7 @@ const activate = (context: vscode.ExtensionContext) => {
    vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
    // #endregion
 
-   handleReleaseNotes(context)
+   handleImportantChanges(context)
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
@@ -280,10 +280,10 @@ const activate = (context: vscode.ExtensionContext) => {
       }
    )
 
-   const showReleaseNotesDisposable = vscode.commands.registerCommand(
-      'kcs.showReleaseNotes',
+   const showImportantChangesDisposable = vscode.commands.registerCommand(
+      'kcs.showImportantChanges',
       () => {
-         showReleaseNotes(context)
+         showImportantChanges(context)
       }
    )
 
@@ -399,7 +399,7 @@ const activate = (context: vscode.ExtensionContext) => {
       placeInactiveSelection,
       activateSelections,
       removeInactiveSelections,
-      showReleaseNotesDisposable,
+      showImportantChangesDisposable,
       undo,
       redo,
       ...disposables

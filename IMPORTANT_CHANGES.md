@@ -1,7 +1,7 @@
 <br>
 <br>
 
-**If it's your first install, you won't have to check the new changes.**
+**If it's your first install, you won't have to check the new important changes.**
 
 <br>
 <br>
@@ -17,7 +17,7 @@
 
 <br>
 
--  This being siad, to avoid confusion, the feature _"If you discard the active selections, the inactive selections will reappear"_ will be dropped.
+-  This being siad, to keep things simpler, the feature _"If you discard the active selections, the inactive selections will reappear"_ will be dropped. Now you can do that on demand, by hitting the `KCS: Undo` command.
 
 <br>
 <br>
@@ -40,3 +40,7 @@
 ### Fixed issues
 
 -  Fixed an issue when placing multiple inactive selections at once did not work as expected when in some selected places there already were existing inactive selections and in others not.
+
+<br>
+<br>
+<br>
