@@ -21,6 +21,6 @@ prettier.config.js
 extension.ts
 utils.ts
 esbuild.js
-releaseNotes.ts
+importantChanges.ts
 positionTracking.js
 tsconfig.json

@@ -4,7 +4,6 @@
 **If it's your first install, you won't have to check the new important changes.**
 
 <br>
-<br>
 
 ## 1.2.0 (Oct 06 2023)
 
