@@ -1,7 +1,26 @@
 <br>
+<br>
 
-**If it's your first install, you won't have to check Release Notes.**
+**If it's your first install, you won't have to check the new changes.**
 
+<br>
+<br>
+
+## 1.2.0 (Oct 06 2023)
+
+### New feature: Undo-Redo system
+
+-  It targets all actions that have as effect placing or removing inactive selections. Those effects can be undone or redone via two commands:
+
+   -  `KCS: Undo`. By default this is mapped to Windows/Linux: `alt+shift+z`, Mac: `option+shift+z`.
+   -  `KCS: Redo`. By default this is mapped to Windows/Linux: `alt+shift+y`, Mac: `option+shift+y`.
+
+<br>
+
+-  This being siad, to avoid confusion, the feature _"If you discard the active selections, the inactive selections will reappear"_ will be dropped.
+
+<br>
+<br>
 <br>
 
 ## 1.1.0 (14 Aug 2023)

@@ -34,7 +34,7 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 ### If you want to remap the commands
 
-1. Open the Command Palette (`Ctrl+Shift+P` - Windows, `Cmd+Shift+P` - Mac).
+1. Open the Command Palette (Windows/Linux: `Ctrl+Shift+P`, Mac: `Cmd+Shift+P`).
 
 2. Search for and select `Preferences: Open Keyboard Shortcuts`.
 
@@ -50,8 +50,6 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 ### Other features
 
-<br>
-
 -  Placing multiple inactive selections at once is also supported.
 
    ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
@@ -62,15 +60,16 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 <br>
 
--  If you place an inactive selection over another, the existing one will be removed:
+-  If you place an inactive selection over another, the existing one will be removed.
 
    ![Remove innactive selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExejJsdW1nMTZwdDBuOGxlMWc4aXFmMWo5dThzYmgxc3lhZXNqZWtrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/h4XtMmQyasU1rIAQPZ/giphy.gif)
 
 <br>
 
--  If you discard the active selections, the inactive selections will reappear. This is because maybe you wanted to modify something about them, and this feature allows you to do that:
+-  Undo-Redo system. It targets all actions that have as effect placing or removing inactive selections. Those effects can be undone or redone via two commands:
 
-   ![Inactive selections reappear](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Zwc2tsb2RwczZobHNkamMwajMyZXU0dnA4ZHlsY3BubXNkNzFpaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XTo0ZNyw3jCEsN5gdJ/giphy.gif)
+   -  `KCS: Undo`. By default this is mapped to Windows/Linux: `alt+shift+z`, Mac: `option+shift+z`.
+   -  `KCS: Redo`. By default this is mapped to Windows/Linux: `alt+shift+y`, Mac: `option+shift+y`.
 
 <br>
 

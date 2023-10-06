@@ -18,10 +18,9 @@ teste4.ts
 teste5.js
 .eslintrc.js
 prettier.config.js
-extension.js
-utils.js
+extension.ts
+utils.ts
 esbuild.js
-releaseNotes.js
+releaseNotes.ts
 positionTracking.js
-types.ts
 tsconfig.json
