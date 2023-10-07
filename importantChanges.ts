@@ -10,6 +10,10 @@ import * as semver from 'semver'
 import { outputChannel } from './utils'
 // #endregion
 
+// #region | Global Data
+const VERSIONS_WITH_IMPORTANT_CHANGES = ['1.1.0', '1.2.0']
+// #endregion
+
 const showImportantChanges = async (context: vscode.ExtensionContext) => {
    try {
       const workspacePath = process.env.WORKSPACE_PATH
@@ -50,8 +54,10 @@ const handleImportantChanges = (context: vscode.ExtensionContext) => {
    }
 
    if (semver.diff(previousVersion, currentVersion)) {
-      if (semver.lt(previousVersion, currentVersion)) {
-         showImportantChanges(context)
+      for (const version of VERSIONS_WITH_IMPORTANT_CHANGES) {
+         if (semver.satisfies(version, `>${previousVersion} <=${currentVersion}`)) {
+            showImportantChanges(context)
+         }
       }
 
       context.globalState.update('extensionVersion', currentVersion)
