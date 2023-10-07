@@ -66,7 +66,7 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 <br>
 
--  Undo-Redo system. It targets all actions that have as effect placing or removing inactive selections. Those effects can be undone or redone via two commands:
+-  Undo-Redo system. It registers all actions that have as effect placing or removing inactive selections. The inactive selections can be undone or redone via two commands:
 
    -  `KCS: Undo`. By default this is mapped to Windows/Linux: `alt+shift+z`, Mac: `option+shift+z`.
    -  `KCS: Redo`. By default this is mapped to Windows/Linux: `alt+shift+y`, Mac: `option+shift+y`.

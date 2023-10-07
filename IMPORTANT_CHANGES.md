@@ -22,7 +22,7 @@
 <br>
 <br>
 
-## 1.1.0 (14 Aug 2023)
+## 1.1.0 (Aug 14 2023)
 
 ### Behaviour changes
 
