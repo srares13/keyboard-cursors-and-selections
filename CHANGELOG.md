@@ -1,3 +1,7 @@
+### 1.2.1 (Oct 07 2023)
+
+-  Fixed an internal issue which did not affect functionality but it bloated the Extension Host channel with some errors.
+
 ### 1.2.0 (Oct 06 2023)
 
 -  Undo-Redo system for the inactive selections.
