@@ -103,6 +103,11 @@ const activate = (context: vscode.ExtensionContext) => {
 
    vscode.window.onDidChangeActiveTextEditor(
       (editor) => {
+         if (!editor) {
+            return
+         } // This is because when you change the active editor, this event fires multiple times for a single change.
+         // Some of those events have their belonging editors as undefined.
+
          const activeDocUri = editor.document.uri.toString()
          const activeEditorData = mainData[activeDocUri]
 
