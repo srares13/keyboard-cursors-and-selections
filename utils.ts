@@ -21,23 +21,26 @@ const outputChannel = vscode.window.createOutputChannel('KCS')
  */
 const createDecorations = (fontSize) => {
    const eolSelectionBorder = 0.3 * fontSize + 'px'
+   const configuration = vscode.workspace.getConfiguration('kcs')
+   const cursorColor = configuration.get('cursorColor')
+   const selectionColor = configuration.get('selectionColor')
 
    const cursorDecoration = vscode.window.createTextEditorDecorationType({
       after: {
          contentText: '',
-         backgroundColor: 'hsl(338, 78%, 70%)',
-         border: `1.25px solid hsl(338, 78%, 70%)`,
+         backgroundColor: cursorColor,
+         border: `1.25px solid ${cursorColor}`,
          margin: `0 -2.5px 0 0`
       }
    })
 
    const selectionDecoration = vscode.window.createTextEditorDecorationType({
-      backgroundColor: 'hsla(299, 69%, 33%, 0.6)'
+      backgroundColor: selectionColor
    })
 
    const eolSelectionDecoration = vscode.window.createTextEditorDecorationType({
       border: `${eolSelectionBorder} solid transparent`,
-      backgroundColor: 'hsla(299, 69%, 33%, 0.6)'
+      backgroundColor: selectionColor
    })
 
    /**
