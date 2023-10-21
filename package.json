@@ -77,7 +77,24 @@
             "key": "alt+shift+y",
             "when": "editorTextFocus"
          }
-      ]
+      ],
+      "configuration": {
+         "title": "KCS",
+         "properties": {
+            "kcs.cursorColor": {
+               "type": "string",
+               "default": "#ee77a3",
+               "scope": "window",
+               "format": "color-hex"
+            },
+            "kcs.selectionColor": {
+               "type": "string",
+               "default": "#8c1a8e99",
+               "scope": "window",
+               "format": "color-hex"
+            }
+         }
+      }
    },
    "scripts": {
       "lint": "eslint .",
