@@ -11,7 +11,7 @@ import { outputChannel } from './utils'
 // #endregion
 
 // #region | Global Data
-const VERSIONS_WITH_IMPORTANT_CHANGES = ['1.1.0', '1.2.0']
+const VERSIONS_WITH_IMPORTANT_CHANGES = ['1.1.0', '1.2.0', '1.3.0']
 // #endregion
 
 const showImportantChanges = async (context: vscode.ExtensionContext) => {
