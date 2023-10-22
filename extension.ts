@@ -17,9 +17,7 @@ const activate = (context: vscode.ExtensionContext) => {
    // #region | Global Data
    const mainData: { [key: string]: MainDataObject } = {}
 
-   let { setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
-      vscode.workspace.getConfiguration('editor').get('fontSize')
-   )
+   let { setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations()
 
    const disposables = []
 
@@ -30,13 +28,15 @@ const activate = (context: vscode.ExtensionContext) => {
 
    vscode.workspace.onDidChangeConfiguration(
       (event) => {
-         if (event.affectsConfiguration('editor.fontSize')) {
+         if (
+            event.affectsConfiguration('editor.fontSize') ||
+            event.affectsConfiguration('kcs.cursorColor') ||
+            event.affectsConfiguration('kcs.selectionColor')
+         ) {
             const previousUnsetMyDecorations = unsetMyDecorations
             const previousDisposeDecorations = disposeDecorations
 
-            ;({ setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations(
-               vscode.workspace.getConfiguration('editor').get('fontSize')
-            ))
+            ;({ setMyDecorations, unsetMyDecorations, disposeDecorations } = createDecorations())
 
             for (const visibleEditor of vscode.window.visibleTextEditors) {
                const visibleDocUri = visibleEditor.document.uri.toString()

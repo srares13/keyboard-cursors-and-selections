@@ -16,14 +16,14 @@ const outputChannel = vscode.window.createOutputChannel('KCS')
  */
 
 /**
- * @param {number} fontSize
  * @return {{ setMyDecorations: SetMyDecorations, unsetMyDecorations: UnsetMyDecorations, disposeDecorations: CallableFunction }}
  */
-const createDecorations = (fontSize) => {
+const createDecorations = () => {
+   const fontSize: number = vscode.workspace.getConfiguration('editor').get('fontSize')
+   const cursorColor = vscode.workspace.getConfiguration('kcs').get('cursorColor')
+   const selectionColor = vscode.workspace.getConfiguration('kcs').get('selectionColor')
+
    const eolSelectionBorder = 0.3 * fontSize + 'px'
-   const configuration = vscode.workspace.getConfiguration('kcs')
-   const cursorColor = configuration.get('cursorColor')
-   const selectionColor = configuration.get('selectionColor')
 
    const cursorDecoration = vscode.window.createTextEditorDecorationType({
       after: {

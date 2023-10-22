@@ -83,12 +83,14 @@
          "properties": {
             "kcs.cursorColor": {
                "type": "string",
+               "description": "Default: #ee77a3",
                "default": "#ee77a3",
                "scope": "window",
                "format": "color-hex"
             },
             "kcs.selectionColor": {
                "type": "string",
+               "description": "Default: #8c1a8e99\nNote that the default color for selections, also has transparency.",
                "default": "#8c1a8e99",
                "scope": "window",
                "format": "color-hex"
