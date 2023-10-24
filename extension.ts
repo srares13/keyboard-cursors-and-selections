@@ -59,6 +59,13 @@ const activate = (context: vscode.ExtensionContext) => {
 
    vscode.workspace.onDidChangeTextDocument(
       (event) => {
+         // When a document is saved, this event is also triggered.
+         // But if the document is only saved and no edit is performed,
+         // then the inactive selections and their history should not disappear.
+         if (event.contentChanges.length === 0) {
+            return
+         }
+
          const eventDocUri = event.document.uri.toString()
          const eventEditorData = mainData[eventDocUri]
 
