@@ -1,5 +1,6 @@
 // #region | External imports
 import * as vscode from 'vscode'
+// import { getUpdatedRanges } from 'vscode-position-tracking'
 // #endregion
 
 // #region | Internal imports
@@ -7,10 +8,11 @@ import {
    createDecorations,
    MainDataObject,
    InactiveSelectionsPlacedAction,
-   InactiveSelectionsRemovedAction
+   InactiveSelectionsRemovedAction,
+   RangeAndIndex
 } from './utils'
 import { handleImportantChanges, showImportantChanges } from './importantChanges'
-
+import { getUpdatedRanges } from './positionTracking'
 // #endregion
 
 const activate = (context: vscode.ExtensionContext) => {
@@ -62,9 +64,13 @@ const activate = (context: vscode.ExtensionContext) => {
          // When a document is saved, this event is also triggered.
          // But if the document is only saved and no edit is performed,
          // then the inactive selections and their history should not disappear.
-         if (event.contentChanges.length === 0) {
+         if (!event.contentChanges.length) {
             return
          }
+
+         const inactiveSelectionsReactToDocumentEdits = vscode.workspace
+            .getConfiguration('kcs')
+            .get('inactiveSelectionsReactToDocumentEdits')
 
          const eventDocUri = event.document.uri.toString()
          const eventEditorData = mainData[eventDocUri]
@@ -73,18 +79,157 @@ const activate = (context: vscode.ExtensionContext) => {
             return
          }
 
-         eventEditorData.inactiveSelections = []
-         eventEditorData.actions = []
-         eventEditorData.actionIndex = -1
+         if (inactiveSelectionsReactToDocumentEdits) {
+            const inactiveSelectionsWithNull = getUpdatedRanges(
+               eventEditorData.inactiveSelections,
+               event.contentChanges,
+               { keepRemovedRanges: true }
+            )
+            const rebuiltInactiveSelectionsForUndo = [...inactiveSelectionsWithNull]
+            const rebuiltInactiveSelectionsForRedo = [...inactiveSelectionsWithNull]
 
-         for (const visibleEditor of vscode.window.visibleTextEditors) {
-            if (visibleEditor.document.uri.toString() === eventDocUri) {
-               unsetMyDecorations(visibleEditor)
+            eventEditorData.inactiveSelections = inactiveSelectionsWithNull.filter(
+               (selection) => selection
+            )
+
+            if (
+               vscode.window.activeTextEditor.document.uri.toString() === eventDocUri &&
+               !eventEditorData.inactiveSelections.length
+            ) {
+               vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
             }
-         }
 
-         if (vscode.window.activeTextEditor.document.uri.toString() === eventDocUri) {
-            vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            for (const visibleEditor of vscode.window.visibleTextEditors) {
+               if (visibleEditor.document.uri.toString() === eventDocUri) {
+                  setMyDecorations(visibleEditor, eventEditorData.inactiveSelections)
+               }
+            }
+
+            for (let i = eventEditorData.actionIndex; i >= 0; i--) {
+               const action = eventEditorData.actions[i]
+
+               switch (action.type) {
+                  case 'inactiveSelectionsPlaced':
+                     rebuiltInactiveSelectionsForUndo.length -= action.elementsCountToRemove
+
+                     action.ranges = rebuiltInactiveSelectionsForUndo
+                        .slice(-action.elementsCountToRemove)
+                        .filter((range) => range)
+                     action.elementsCountToRemove = action.ranges.length
+
+                     if (!action.ranges.length) {
+                        eventEditorData.actions[i] = null
+                     }
+
+                     break
+                  case 'inactiveSelectionsRemoved':
+                     const updatedRangesAndIndexes: RangeAndIndex[] = []
+
+                     for (const rangeAndIndex of action.rangesAndIndexes) {
+                        const updatedRange = getUpdatedRanges(
+                           [rangeAndIndex.range],
+                           event.contentChanges,
+                           { keepRemovedRanges: true }
+                        )[0]
+
+                        rebuiltInactiveSelectionsForUndo.splice(
+                           rangeAndIndex.index,
+                           0,
+                           updatedRange
+                        )
+
+                        let nullCount = 0
+                        for (let i = 0; i < rangeAndIndex.index; i++) {
+                           if (!rebuiltInactiveSelectionsForUndo[i]) {
+                              nullCount++
+                           }
+                        }
+                        const updatedIndex = rangeAndIndex.index - nullCount
+
+                        if (updatedRange) {
+                           updatedRangesAndIndexes.push({
+                              index: updatedIndex,
+                              range: updatedRange
+                           })
+                        }
+                     }
+
+                     action.rangesAndIndexes = updatedRangesAndIndexes
+
+                     if (!action.rangesAndIndexes.length) {
+                        eventEditorData.actions[i] = null
+                     }
+
+                     break
+               }
+            }
+
+            for (let i = eventEditorData.actionIndex + 1; i < eventEditorData.actions.length; i++) {
+               const action = eventEditorData.actions[i]
+
+               switch (action.type) {
+                  case 'inactiveSelectionsPlaced':
+                     const updatedRanges = getUpdatedRanges(action.ranges, event.contentChanges, {
+                        keepRemovedRanges: true
+                     })
+
+                     action.ranges = updatedRanges.filter((updatedRange) => updatedRange)
+                     action.elementsCountToRemove = action.ranges.length
+
+                     rebuiltInactiveSelectionsForRedo.push(...updatedRanges)
+
+                     if (!action.ranges.length) {
+                        eventEditorData.actions[i] = null
+                     }
+
+                     break
+                  case 'inactiveSelectionsRemoved':
+                     for (let i = action.rangesAndIndexes.length - 1; i >= 0; i--) {
+                        if (rebuiltInactiveSelectionsForRedo[action.rangesAndIndexes[i].index]) {
+                           let nullCount = 0
+                           for (let i = 0; i < action.rangesAndIndexes[i].index; i++) {
+                              if (!rebuiltInactiveSelectionsForRedo[i]) {
+                                 nullCount++
+                              }
+                           }
+
+                           action.rangesAndIndexes[i].range =
+                              rebuiltInactiveSelectionsForRedo[action.rangesAndIndexes[i].index]
+                           action.rangesAndIndexes[i].index -= nullCount
+                        } else {
+                           action.rangesAndIndexes[i] = null
+                        }
+
+                        rebuiltInactiveSelectionsForRedo.splice(action.rangesAndIndexes[i].index, 1)
+                     }
+
+                     action.rangesAndIndexes = action.rangesAndIndexes.filter(
+                        (rangeAndIndex) => rangeAndIndex
+                     )
+
+                     if (!action.rangesAndIndexes.length) {
+                        eventEditorData.actions[i] = null
+                     }
+
+                     break
+               }
+            }
+
+            eventEditorData.actions = eventEditorData.actions.filter((action) => action)
+         } else {
+            eventEditorData.inactiveSelections = []
+            eventEditorData.actions = []
+            eventEditorData.actionIndex = -1
+
+            for (const visibleEditor of vscode.window.visibleTextEditors) {
+               if (visibleEditor.document.uri.toString() === eventDocUri) {
+                  unsetMyDecorations(visibleEditor)
+               }
+            }
+
+            if (vscode.window.activeTextEditor.document.uri.toString() === eventDocUri) {
+               vscode.commands.executeCommand('setContext', 'inactiveSelections', false)
+            }
          }
       },
       undefined,
@@ -140,7 +285,6 @@ const activate = (context: vscode.ExtensionContext) => {
          }
          const activeEditorData = mainData[activeDocUri]
 
-         // let action: InactiveSelectionsPlaced | InactiveSelectionsRemoved
          let action
 
          let currentInactiveSelections = [...activeEditorData.inactiveSelections]

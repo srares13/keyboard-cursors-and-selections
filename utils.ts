@@ -108,12 +108,14 @@ class InactiveSelectionsPlacedAction {
    elementsCountToRemove: number = undefined
 }
 
+type RangeAndIndex = {
+   index: number
+   range: vscode.Range
+}
+
 class InactiveSelectionsRemovedAction {
    readonly type = 'inactiveSelectionsRemoved'
-   rangesAndIndexes: Array<{
-      index: number
-      range: vscode.Range
-   }> = []
+   rangesAndIndexes: RangeAndIndex[] = []
 }
 
 export {
@@ -121,5 +123,6 @@ export {
    createDecorations,
    MainDataObject,
    InactiveSelectionsPlacedAction,
+   RangeAndIndex,
    InactiveSelectionsRemovedAction
 }

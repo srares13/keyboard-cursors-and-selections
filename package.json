@@ -94,6 +94,12 @@
                "default": "#8c1a8e99",
                "scope": "window",
                "format": "color-hex"
+            },
+            "kcs.inactiveSelectionsReactToDocumentEdits": {
+               "type": "boolean",
+               "description": "Experimental: When you make edits to the document, the inacitve selections will move across the document in accordance with those edits.",
+               "default": false,
+               "scope": "window"
             }
          }
       }
