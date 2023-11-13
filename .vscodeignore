@@ -23,4 +23,5 @@ extension.ts
 utils.ts
 esbuild.js
 importantChanges.ts
+positionTracking.ts
 tsconfig.json
