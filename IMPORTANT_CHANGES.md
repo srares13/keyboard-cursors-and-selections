@@ -1,12 +1,30 @@
 <br>
 
+## 1.4.0 (Nov 13 2023)
+
+### Experimental: Inactive selections react to document edits
+
+-  When you make edits to the document, the inacitve selections will move across the document in accordance with those edits.
+
+-  This feature is also integrated with the Undo-Redo system, meaning that the undone or redone inactive selections will respect the new document edits.
+
+-  If you wish to enable or disable this feature, it is found in VS Code Settings under the name `Kcs: Inactive Selections React To Document Edits`. By default it is enabled because this is intended to be a core behavior of the extension.
+
+### Fixed issues
+
+-  On simple file save which does not format the document, the inactive selections should not disappear. This is regardless whether you have `Kcs: Inactive Selections React To Document Edits` enabled or not.
+
+<br>
+<br>
+<br>
+
 ## 1.3.0 (Oct 22 2023)
 
 ### You can change the colors of the inactive cursors and selections
 
 1. Open the Command Palette (Windows/Linux: `Ctrl+Shift+P`, Mac: `Cmd+Shift+P`).
 
-2. Search for and select `Preferences: Open Settingts (UI)`.
+2. Search for and select `Preferences: Open Settings (UI)`.
 
 3. Once the settings view is open, type "kcs" and options like `Kcs: Cursor Color` and `Kcs: Selection Color` will appear. Their value has to be given in hex code.
 

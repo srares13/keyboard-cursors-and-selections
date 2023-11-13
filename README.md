@@ -50,30 +50,42 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
 ### Other features
 
--  Placing multiple inactive selections at once is also supported.
+-  **Placing multiple inactive selections at once is also supported**
 
    ![Place multiple inactive selections at once](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmh1MG9qaWRmbGMyaGI0b3pnMm9hYjRoNHEydmg0MXVnZzIwYjg0cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/liMxQauYfMtQvplTQN/giphy.gif)
 
 <br>
 
--  To remove all inactive selections, simply press `Esc`.
+-  **To remove all inactive selections, simply press `Esc`**
 
 <br>
 
--  If you place an inactive selection over another, the existing one will be removed.
+-  **If you place an inactive selection over another, the existing one will be removed**
 
    ![Remove innactive selections](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExejJsdW1nMTZwdDBuOGxlMWc4aXFmMWo5dThzYmgxc3lhZXNqZWtrYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/h4XtMmQyasU1rIAQPZ/giphy.gif)
 
 <br>
 
--  Undo-Redo system. It registers all actions that have as effect placing or removing inactive selections. The inactive selections can be undone or redone via two commands:
+-  **Undo-Redo system**
+
+   -  It registers all actions that have as effect placing or removing inactive selections. The inactive selections can be undone or redone via two commands:
 
    -  `KCS: Undo`. By default this is mapped to Windows/Linux: `alt+shift+z`, Mac: `option+shift+z`.
    -  `KCS: Redo`. By default this is mapped to Windows/Linux: `alt+shift+y`, Mac: `option+shift+y`.
 
 <br>
 
--  You can change the colors of the inactive cursors and selections:
+-  **Experimental: Inactive selections react to document edits**
+
+   -  When you make edits to the document, the inacitve selections will move across the document in accordance with those edits. If this feature is disabled, the inactive selections will disappear on document edits.
+
+   -  This feature is also integrated with the Undo-Redo system, meaning that the undone or redone inactive selections will respect the new document edits.
+
+   -  If you wish to enable or disable this feature, it is found in VS Code Settings under the name `Kcs: Inactive Selections React To Document Edits`. By default it is enabled because this is intended to be a core behavior of the extension.
+
+<br>
+
+-  **You can change the colors of the inactive cursors and selections**
 
    1. Open the Command Palette (Windows/Linux: `Ctrl+Shift+P`, Mac: `Cmd+Shift+P`).
 
@@ -90,12 +102,6 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
       await configuration.update('selectionColor', '#ff000099', vscode.ConfigurationTarget.Global)
       ```
       Note that you can use transparency, especially for the selection color.
-
-<br>
-
-### Behaviours
-
--  When you start editing the file, the inactive selections will be removed.
 
 <br>
 

@@ -9,7 +9,8 @@ import {
    MainDataObject,
    InactiveSelectionsPlacedAction,
    InactiveSelectionsRemovedAction,
-   RangeAndIndex
+   RangeAndIndex,
+   outputChannel
 } from './utils'
 import { handleImportantChanges, showImportantChanges } from './importantChanges'
 import { getUpdatedRanges } from './positionTracking'
@@ -80,13 +81,53 @@ const activate = (context: vscode.ExtensionContext) => {
          }
 
          if (inactiveSelectionsReactToDocumentEdits) {
+            outputChannel.appendLine('**************************')
+            outputChannel.appendLine('Current inactive selections:')
+
             const inactiveSelectionsWithNull = getUpdatedRanges(
                eventEditorData.inactiveSelections,
                event.contentChanges,
-               { keepRemovedRanges: true }
+               { keepRemovedRanges: true, outputChannel }
             )
             const rebuiltInactiveSelectionsForUndo = [...inactiveSelectionsWithNull]
             const rebuiltInactiveSelectionsForRedo = [...inactiveSelectionsWithNull]
+
+            outputChannel.appendLine(`-------------------`)
+            outputChannel.appendLine(`Action index: ${eventEditorData.actionIndex.toString()}`)
+            outputChannel.appendLine(`-------------------`)
+            outputChannel.appendLine(`Actions:`)
+            for (const action of eventEditorData.actions) {
+               switch (action.type) {
+                  case 'inactiveSelectionsPlaced':
+                     action.ranges.forEach((range) => {
+                        outputChannel.appendLine(
+                           `    start: ${range.start.line} ${range.start.character}`
+                        )
+                        outputChannel.appendLine(
+                           `    end: ${range.end.line} ${range.end.character}`
+                        )
+                        outputChannel.appendLine(`    -----`)
+                     })
+
+                     break
+                  case 'inactiveSelectionsRemoved':
+                     action.rangesAndIndexes.forEach((rangeAndIndex) => {
+                        outputChannel.appendLine(`    index: ${rangeAndIndex.index}`)
+
+                        outputChannel.appendLine(
+                           `    start: ${rangeAndIndex.range.start.line} ${rangeAndIndex.range.start.character}`
+                        )
+                        outputChannel.appendLine(
+                           `    end: ${rangeAndIndex.range.end.line} ${rangeAndIndex.range.end.character}`
+                        )
+                        outputChannel.appendLine(`    -----`)
+                     })
+
+                     break
+               }
+
+               outputChannel.appendLine(`###`)
+            }
 
             eventEditorData.inactiveSelections = inactiveSelectionsWithNull.filter(
                (selection) => selection
@@ -110,11 +151,12 @@ const activate = (context: vscode.ExtensionContext) => {
 
                switch (action.type) {
                   case 'inactiveSelectionsPlaced':
-                     rebuiltInactiveSelectionsForUndo.length -= action.elementsCountToRemove
-
                      action.ranges = rebuiltInactiveSelectionsForUndo
                         .slice(-action.elementsCountToRemove)
                         .filter((range) => range)
+
+                     rebuiltInactiveSelectionsForUndo.length -= action.elementsCountToRemove
+
                      action.elementsCountToRemove = action.ranges.length
 
                      if (!action.ranges.length) {
@@ -187,20 +229,28 @@ const activate = (context: vscode.ExtensionContext) => {
                      for (let i = action.rangesAndIndexes.length - 1; i >= 0; i--) {
                         if (rebuiltInactiveSelectionsForRedo[action.rangesAndIndexes[i].index]) {
                            let nullCount = 0
-                           for (let i = 0; i < action.rangesAndIndexes[i].index; i++) {
-                              if (!rebuiltInactiveSelectionsForRedo[i]) {
+                           for (let j = 0; j < action.rangesAndIndexes[i].index; j++) {
+                              if (!rebuiltInactiveSelectionsForRedo[j]) {
                                  nullCount++
                               }
                            }
 
                            action.rangesAndIndexes[i].range =
                               rebuiltInactiveSelectionsForRedo[action.rangesAndIndexes[i].index]
+
+                           rebuiltInactiveSelectionsForRedo.splice(
+                              action.rangesAndIndexes[i].index,
+                              1
+                           )
+
                            action.rangesAndIndexes[i].index -= nullCount
                         } else {
+                           rebuiltInactiveSelectionsForRedo.splice(
+                              action.rangesAndIndexes[i].index,
+                              1
+                           )
                            action.rangesAndIndexes[i] = null
                         }
-
-                        rebuiltInactiveSelectionsForRedo.splice(action.rangesAndIndexes[i].index, 1)
                      }
 
                      action.rangesAndIndexes = action.rangesAndIndexes.filter(
@@ -215,7 +265,21 @@ const activate = (context: vscode.ExtensionContext) => {
                }
             }
 
-            eventEditorData.actions = eventEditorData.actions.filter((action) => action)
+            let nullCount = 0
+
+            eventEditorData.actions = eventEditorData.actions.filter((action, i) => {
+               if (!action) {
+                  if (i <= eventEditorData.actionIndex) {
+                     nullCount++
+                  }
+
+                  return false
+               }
+
+               return true
+            })
+
+            eventEditorData.actionIndex -= nullCount
          } else {
             eventEditorData.inactiveSelections = []
             eventEditorData.actions = []

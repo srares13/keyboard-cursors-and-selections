@@ -1,3 +1,9 @@
+### 1.4.0 (Nov 13 2023)
+
+-  Added the feature of inactive selections reacting to document edits.
+
+-  Fixed issue: On simple file save which does not format the document, the inactive selections should not disappear. This is regardless whether you have the "Inactive selections react to document edits" feature enabled or not.
+
 ### 1.3.0 (Oct 22 2023)
 
 -  Added the option to chnage the color of the inactive cursors and selections.
@@ -9,6 +15,7 @@
 ### 1.2.0 (Oct 06 2023)
 
 -  Undo-Redo system for the inactive selections.
+
 -  New way of showing the important changes.
 
 ### 1.1.3 (Sep 09 2023)

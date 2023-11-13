@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "It enables you to create arbitrary cursors and selections with the keyboard.",
-   "version": "1.3.0",
+   "version": "1.4.0",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -10,7 +10,7 @@
    },
    "icon": "images/KCS-icon.png",
    "engines": {
-      "vscode": "^1.83.1"
+      "vscode": "^1.84.0"
    },
    "categories": [
       "Other"
@@ -98,7 +98,7 @@
             "kcs.inactiveSelectionsReactToDocumentEdits": {
                "type": "boolean",
                "description": "Experimental: When you make edits to the document, the inacitve selections will move across the document in accordance with those edits.",
-               "default": false,
+               "default": true,
                "scope": "window"
             }
          }
