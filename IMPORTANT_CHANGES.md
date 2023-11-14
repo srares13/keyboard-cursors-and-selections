@@ -10,6 +10,8 @@
 
 -  If you wish to enable or disable this feature, it is found in VS Code Settings under the name `Kcs: Inactive Selections React To Document Edits`. By default it is enabled because this is intended to be a core behavior of the extension.
 
+-  Please report any issues you have about this experimental feature.
+
 ### Fixed issues
 
 -  On simple file save which does not format the document, the inactive selections should not disappear. This is regardless whether you have `Kcs: Inactive Selections React To Document Edits` enabled or not.

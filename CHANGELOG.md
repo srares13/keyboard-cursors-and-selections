@@ -1,3 +1,7 @@
+### 1.4.1 (Nov 14 2023)
+
+-  Some information added to the README file.
+
 ### 1.4.0 (Nov 13 2023)
 
 -  Added the feature of inactive selections reacting to document edits.

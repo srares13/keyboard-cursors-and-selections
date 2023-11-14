@@ -6,7 +6,7 @@
 
 <br>
 
-### And then activate them
+### And activate them
 
 ![And then activate them](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZiZHJ2aHR0dnFkb2h0bnNvamg5andmdXZpNHdzOGNjc3R2dWxkeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tFsUvTNgfTILb8IooB/giphy.gif)
 
@@ -83,6 +83,8 @@ For questions, suggestions, issues, feel free to use the [Issues](https://github
 
    -  If you wish to enable or disable this feature, it is found in VS Code Settings under the name `Kcs: Inactive Selections React To Document Edits`. By default it is enabled because this is intended to be a core behavior of the extension.
 
+   -  Please report any issues you have about this experimental feature.
+
 <br>
 
 -  **You can change the colors of the inactive cursors and selections**
@@ -112,3 +114,9 @@ These limitations are more technical and are handled to not constitute functiona
 -  [Inactive selections visuals](https://github.com/srares13/keyboard-cursors-and-selections/issues/1)
 
 -  [Uniquely identify editors with the same file](https://github.com/srares13/keyboard-cursors-and-selections/issues/2)
+
+<br>
+
+### Next updates
+
+-  In the coming updates I will gradually comment the code of this extension by explaining why each piece of the code is there. This is to raise the chances of this project being maintained by others, especially if it happens that I will no longer be part of it.
