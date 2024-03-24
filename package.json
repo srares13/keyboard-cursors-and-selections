@@ -90,7 +90,7 @@
             },
             "kcs.selectionColor": {
                "type": "string",
-               "description": "Default: #8c1a8e99\nNote that the default color for selections, also has transparency.",
+               "description": "Default: #8c1a8e99\nNote that the default color for selections has transparency.",
                "default": "#8c1a8e99",
                "scope": "window",
                "format": "color-hex"
