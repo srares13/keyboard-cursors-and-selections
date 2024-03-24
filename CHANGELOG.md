@@ -1,3 +1,9 @@
+### 1.4.2 (Mar 23 2024)
+
+-  Some improvements to the definition of when the inactive cursors and selections are discardable ("when" clause of the KCS: Remove Inactive Selections command).
+
+-  Changes to README file.
+
 ### 1.4.1 (Nov 14 2023)
 
 -  Some information added to the README file.
