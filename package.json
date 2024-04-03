@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "Create arbitrary cursors and selections with the keyboard.",
-   "version": "1.4.3",
+   "version": "1.4.4",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -65,7 +65,7 @@
          {
             "command": "kcs.removeInactiveSelections",
             "key": "escape",
-            "when": "editorTextFocus && inactiveSelections && !findWidgetVisible && !suggestWidgetVisible && !renameInputVisible && !referenceSearchVisible && !codeActionMenuVisible && !parameterHintsVisible && !notificationCenterVisible && !notificationToastsVisible && !editorHasSelection"
+            "when": "editorTextFocus && inactiveSelections && !editorHasSelection && !editorHasMultipleSelections && !findWidgetVisible && !suggestWidgetVisible && !renameInputVisible && !referenceSearchVisible && !codeActionMenuVisible && !parameterHintsVisible && !notificationCenterVisible && !notificationToastsVisible"
          },
          {
             "command": "kcs.undo",
