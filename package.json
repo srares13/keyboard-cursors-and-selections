@@ -71,16 +71,6 @@
             "when": "editorTextFocus"
          },
          {
-            "command": "kcs.cycleInactiveSelections",
-            "key": "alt+tab",
-            "when": "editorTextFocus"
-         },
-         {
-            "command": "kcs.reverseCycleInactiveSelections",
-            "key": "shift+alt+tab",
-            "when": "editorTextFocus"
-         },
-         {
             "command": "kcs.removeInactiveSelections",
             "key": "escape",
             "when": "editorTextFocus && inactiveSelections && !editorHasSelection && !editorHasMultipleSelections && !findWidgetVisible && !suggestWidgetVisible && !renameInputVisible && !referenceSearchVisible && !codeActionMenuVisible && !parameterHintsVisible && !notificationCenterVisible && !notificationToastsVisible"
@@ -93,6 +83,16 @@
          {
             "command": "kcs.redo",
             "key": "alt+shift+y",
+            "when": "editorTextFocus"
+         },
+         {
+            "command": "kcs.cycleInactiveSelections",
+            "key": "ctrl+2",
+            "when": "editorTextFocus"
+         },
+         {
+            "command": "kcs.reverseCycleInactiveSelections",
+            "key": "ctrl+1",
             "when": "editorTextFocus"
          }
       ],
