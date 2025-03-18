@@ -39,14 +39,6 @@
             "title": "KCS: Remove Inactive Selections"
          },
          {
-            "command": "kcs.cycleInactiveSelections",
-            "title": "KCS: Cycle through Inactive Selections"
-         },
-         {
-            "command": "kcs.reverseCycleInactiveSelections",
-            "title": "KCS: Cycle through Inactive Selections backwards"
-         },
-         {
             "command": "kcs.showImportantChanges",
             "title": "KCS: Show Important Changes"
          },
@@ -83,16 +75,6 @@
          {
             "command": "kcs.redo",
             "key": "alt+shift+y",
-            "when": "editorTextFocus"
-         },
-         {
-            "command": "kcs.cycleInactiveSelections",
-            "key": "ctrl+2",
-            "when": "editorTextFocus"
-         },
-         {
-            "command": "kcs.reverseCycleInactiveSelections",
-            "key": "ctrl+1",
             "when": "editorTextFocus"
          }
       ],
