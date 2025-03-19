@@ -23,14 +23,14 @@ const createDecorations = () => {
    const cursorColor = vscode.workspace.getConfiguration('kcs').get('cursorColor')
    const selectionColor = vscode.workspace.getConfiguration('kcs').get('selectionColor')
 
-   const eolSelectionBorder = 0.3 * fontSize + 'px'
+   const eolBorderSize = 0.3 * fontSize + 'px'
 
    const cursorDecoration = vscode.window.createTextEditorDecorationType({
       after: {
          contentText: '',
          backgroundColor: cursorColor,
-         border: `1.25px solid ${cursorColor}`,
-         margin: `0 -2.5px 0 0`
+         border: `2px solid ${cursorColor}`,
+         margin: `0 -1.7px 0 -1.7px`
       }
    })
 
@@ -38,8 +38,8 @@ const createDecorations = () => {
       backgroundColor: selectionColor
    })
 
-   const eolSelectionDecoration = vscode.window.createTextEditorDecorationType({
-      border: `${eolSelectionBorder} solid transparent`,
+   const eolDecoration = vscode.window.createTextEditorDecorationType({
+      border: `${eolBorderSize} solid transparent`,
       backgroundColor: selectionColor
    })
 
@@ -49,7 +49,7 @@ const createDecorations = () => {
    const setMyDecorations = (editor, inactiveSelections) => {
       const cursorDecorationRanges = []
       const selectionDecorationRanges = []
-      const eolSelectionDecorationRanges = []
+      const eolDecorationRanges = []
 
       inactiveSelections.forEach((range) => {
          if (range.start.isEqual(range.end)) {
@@ -68,14 +68,14 @@ const createDecorations = () => {
                const position = new vscode.Position(lineNumber, line.range.end.character)
                const range = new vscode.Range(position, position)
 
-               eolSelectionDecorationRanges.push(range)
+               eolDecorationRanges.push(range)
             }
          }
       })
 
       editor.setDecorations(cursorDecoration, cursorDecorationRanges)
       editor.setDecorations(selectionDecoration, selectionDecorationRanges)
-      editor.setDecorations(eolSelectionDecoration, eolSelectionDecorationRanges)
+      editor.setDecorations(eolDecoration, eolDecorationRanges)
    }
 
    /**
@@ -84,13 +84,13 @@ const createDecorations = () => {
    const unsetMyDecorations = (editor) => {
       editor.setDecorations(cursorDecoration, [])
       editor.setDecorations(selectionDecoration, [])
-      editor.setDecorations(eolSelectionDecoration, [])
+      editor.setDecorations(eolDecoration, [])
    }
 
    const disposeDecorations = () => {
       cursorDecoration.dispose()
       selectionDecoration.dispose()
-      eolSelectionDecoration.dispose()
+      eolDecoration.dispose()
    }
 
    return { setMyDecorations, unsetMyDecorations, disposeDecorations }

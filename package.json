@@ -2,7 +2,7 @@
    "name": "kcs",
    "displayName": "Keyboard Cursors and Selections",
    "description": "Create arbitrary cursors and selections with the keyboard.",
-   "version": "1.4.4",
+   "version": "1.4.5",
    "publisher": "srares13",
    "repository": {
       "type": "git",
@@ -10,7 +10,7 @@
    },
    "icon": "images/KCS-icon.png",
    "engines": {
-      "vscode": "^1.87.2"
+      "vscode": "^1.98.2"
    },
    "categories": [
       "Other"

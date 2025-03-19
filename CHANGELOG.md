@@ -1,3 +1,7 @@
+### 1.4.5 (Mar 19 2025)
+
+-  Fixed an issue where the cursor decoration was too thin on certain zoom levels of VS Code.
+
 ### 1.4.4 (Apr 03 2024)
 
 -  Patch for the definition of when the inactive cursors and selections are discardable ("when" clause of the KCS: Remove Inactive Selections command).
