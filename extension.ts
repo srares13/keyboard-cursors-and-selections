@@ -466,6 +466,65 @@ const activate = (context: vscode.ExtensionContext) => {
       activeEditorData.inactiveSelections = []
    })
 
+   const cycleInactiveSelections = vscode.commands.registerCommand('kcs.cycleInactiveSelections',() => {
+      const activeEditor = vscode.window.activeTextEditor
+      const activeDocUri = vscode.window.activeTextEditor.document.uri.toString()
+      const activeEditorData = mainData[activeDocUri]
+
+      if (!activeEditorData || !activeEditorData.inactiveSelections.length) {
+         return
+      }
+
+      const inactiveSelections = activeEditorData.inactiveSelections.map(
+         (range) => new vscode.Selection(range.start, range.end)
+      )
+
+      const [currentSelection] = activeEditor.selections
+      let nextSelection = inactiveSelections.pop()
+      let prevSelection;
+
+      while (nextSelection && !currentSelection.isEqual(nextSelection)){
+         prevSelection = nextSelection
+         nextSelection = inactiveSelections.pop()
+      }
+
+      for (const visibleEditor of vscode.window.visibleTextEditors) {
+         if (visibleEditor.document.uri.toString() === activeDocUri) {
+            visibleEditor.selections = [ prevSelection ? prevSelection : inactiveSelections[0] ]
+         }
+      }
+   })
+
+   const reverseCycleInactiveSelections = vscode.commands.registerCommand('kcs.reverseCycleInactiveSelections',() => {
+      const activeEditor = vscode.window.activeTextEditor
+      const activeDocUri = vscode.window.activeTextEditor.document.uri.toString()
+      const activeEditorData = mainData[activeDocUri]
+
+      if (!activeEditorData || !activeEditorData.inactiveSelections.length) {
+         return
+      }
+
+      const inactiveSelections = activeEditorData.inactiveSelections.map(
+         (range) => new vscode.Selection(range.start, range.end)
+      ).reverse()
+
+      const [currentSelection] = activeEditor.selections
+      let nextSelection = inactiveSelections.pop()
+      let prevSelection;
+
+      while (nextSelection && !currentSelection.isEqual(nextSelection)){
+         prevSelection = nextSelection
+         nextSelection = inactiveSelections.pop()
+      }
+
+      for (const visibleEditor of vscode.window.visibleTextEditors) {
+         if (visibleEditor.document.uri.toString() === activeDocUri) {
+            visibleEditor.selections = [ prevSelection ? prevSelection : inactiveSelections[0] ]
+         }
+      }
+   })
+
+
    const removeInactiveSelections = vscode.commands.registerCommand(
       'kcs.removeInactiveSelections',
       () => {
@@ -618,6 +677,8 @@ const activate = (context: vscode.ExtensionContext) => {
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
+      cycleInactiveSelections,
+      reverseCycleInactiveSelections,
       removeInactiveSelections,
       showImportantChangesDisposable,
       undo,
