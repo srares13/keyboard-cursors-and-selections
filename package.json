@@ -35,6 +35,10 @@
             "title": "KCS: Activate Selections"
          },
          {
+            "command": "kcs.deactivateSelections",
+            "title": "KCS: Deactivate Selections"
+         },
+         {
             "command": "kcs.removeInactiveSelections",
             "title": "KCS: Remove Inactive Selections"
          },
@@ -60,7 +64,12 @@
          {
             "command": "kcs.activateSelections",
             "key": "pageup",
-            "when": "editorTextFocus"
+            "when": "editorTextFocus && inactiveSelections"
+         },
+         {
+            "command": "kcs.deactivateSelections",
+            "key": "pageup",
+            "when": "editorTextFocus && !inactiveSelections"
          },
          {
             "command": "kcs.removeInactiveSelections",

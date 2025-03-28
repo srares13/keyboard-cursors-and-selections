@@ -466,6 +466,11 @@ const activate = (context: vscode.ExtensionContext) => {
       activeEditorData.inactiveSelections = []
    })
 
+   const deactivateSelections = vscode.commands.registerCommand('kcs.deactivateSelections', () => {
+      vscode.commands.executeCommand('kcs.placeInactiveSelection');
+      vscode.commands.executeCommand('removeSecondaryCursors');
+   })
+
    const removeInactiveSelections = vscode.commands.registerCommand(
       'kcs.removeInactiveSelections',
       () => {
@@ -618,6 +623,7 @@ const activate = (context: vscode.ExtensionContext) => {
    context.subscriptions.push(
       placeInactiveSelection,
       activateSelections,
+      deactivateSelections,
       removeInactiveSelections,
       showImportantChangesDisposable,
       undo,
